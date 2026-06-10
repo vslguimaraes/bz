@@ -1835,7 +1835,7 @@
       "link_tw": ""
     },
     {
-      "id": "dunlop_cx_200",
+      "id": "dunlop_cx_200_dcx2s",
       "pcode_twu": "DCX2S",
       "marca": "Dunlop",
       "modelo": "CX 200",
@@ -1924,7 +1924,7 @@
       "link_tw": ""
     },
     {
-      "id": "dunlop_cx_200_os",
+      "id": "dunlop_cx_200_os_dcx2os",
       "pcode_twu": "DCX2OS",
       "marca": "Dunlop",
       "modelo": "CX 200 OS",
@@ -2142,7 +2142,7 @@
       "link_tw": "https://www.tennis-warehouse.com/Dunlop_CX_400_Tour"
     },
     {
-      "id": "dunlop_cx_400_tour",
+      "id": "dunlop_cx_400_tour_d400t",
       "pcode_twu": "D400T",
       "marca": "Dunlop",
       "modelo": "CX 400 Tour",
@@ -3008,7 +3008,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_gravity_pro",
+      "id": "head_graphene_360_plus_gravity_pro",
       "pcode_twu": "HGPG36",
       "marca": "Head",
       "modelo": "Graphene 360+ Gravity Pro",
@@ -3055,7 +3055,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_gravity_tour",
+      "id": "head_graphene_360_plus_gravity_tour",
       "pcode_twu": "HGTG36",
       "marca": "Head",
       "modelo": "Graphene 360+ Gravity Tour",
@@ -3102,7 +3102,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_prestige_midplus",
+      "id": "head_graphene_360_plus_prestige_midplus",
       "pcode_twu": "HPRMPR",
       "marca": "Head",
       "modelo": "Graphene 360+ Prestige Midplus",
@@ -3147,7 +3147,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_prestige_tour",
+      "id": "head_graphene_360_plus_prestige_tour",
       "pcode_twu": "HPRTOR",
       "marca": "Head",
       "modelo": "Graphene 360+ Prestige Tour",
@@ -3193,7 +3193,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_radical_mp",
+      "id": "head_graphene_360_plus_radical_mp",
       "pcode_twu": "HRRMP",
       "marca": "Head",
       "modelo": "Graphene 360+ Radical MP",
@@ -3242,7 +3242,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_speed_mp",
+      "id": "head_graphene_360_plus_speed_mp",
       "pcode_twu": "H3SMIP",
       "marca": "Head",
       "modelo": "Graphene 360+ Speed MP",
@@ -3293,7 +3293,7 @@
       "link_tw": ""
     },
     {
-      "id": "head_graphene_360_speed_pro",
+      "id": "head_graphene_360_plus_speed_pro",
       "pcode_twu": "H3SPRO",
       "marca": "Head",
       "modelo": "Graphene 360+ Speed Pro",
@@ -9378,7 +9378,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_ezone_100_2025",
+      "id": "yonex_ezone_100_plus_2025",
       "pcode_twu": "LEZ10B",
       "marca": "Yonex",
       "modelo": "EZONE 100+ (2025)",
@@ -9425,7 +9425,7 @@
       "link_tw": "https://www.tennis-warehouse.com/Yonex_EZONE_100_2025"
     },
     {
-      "id": "yonex_ezone_100_2022",
+      "id": "yonex_ezone_100_plus_2022",
       "pcode_twu": "EZ10PL",
       "marca": "Yonex",
       "modelo": "EZONE 100+ 2022",
@@ -9756,7 +9756,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_ezone_98_2025",
+      "id": "yonex_ezone_98_plus_2025",
       "pcode_twu": "LEZ98B",
       "marca": "Yonex",
       "modelo": "EZONE 98+ (2025)",
@@ -9803,7 +9803,7 @@
       "link_tw": "https://www.tennis-warehouse.com/Yonex_EZONE_98_2025"
     },
     {
-      "id": "yonex_ezone_98_2022",
+      "id": "yonex_ezone_98_plus_2022",
       "pcode_twu": "EZ98PL",
       "marca": "Yonex",
       "modelo": "EZONE 98+ 2022",
@@ -10305,7 +10305,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_vcore_100_2023",
+      "id": "yonex_vcore_100_plus_2023",
       "pcode_twu": "YV100P",
       "marca": "Yonex",
       "modelo": "VCORE 100+ 2023",
@@ -10351,7 +10351,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_vcore_100_8th_gen",
+      "id": "yonex_vcore_100_plus_8th_gen",
       "pcode_twu": "VC1P8G",
       "marca": "Yonex",
       "modelo": "VCORE 100+ 8th Gen",
@@ -10794,7 +10794,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_vcore_98_2021",
+      "id": "yonex_vcore_98_plus_2021",
       "pcode_twu": "YVC98P",
       "marca": "Yonex",
       "modelo": "VCORE 98+ (2021)",
@@ -10838,7 +10838,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_vcore_98_2023",
+      "id": "yonex_vcore_98_plus_2023",
       "pcode_twu": "YV98P",
       "marca": "Yonex",
       "modelo": "VCORE 98+ 2023",
@@ -10882,7 +10882,7 @@
       "link_tw": ""
     },
     {
-      "id": "yonex_vcore_98_8th_gen",
+      "id": "yonex_vcore_98_plus_8th_gen",
       "pcode_twu": "VC9P8G",
       "marca": "Yonex",
       "modelo": "VCORE 98+ 8th Gen",

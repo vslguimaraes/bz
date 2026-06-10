@@ -297,7 +297,12 @@ Responda APENAS com o JSON, sem markdown, sem explicação.`
   })
 
   const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
-  const result = JSON.parse(responseText) as RecomendacaoResult
+  // Claude às vezes envolve o JSON em markdown code fences — remover antes de parsear
+  const cleaned = responseText
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/```\s*$/i, '')
+    .trim()
+  const result = JSON.parse(cleaned) as RecomendacaoResult
 
   return {
     ...result,
