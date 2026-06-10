@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# lockfile — gerado localmente no Windows, incompatível com Linux (Vercel/SWC)
+package-lock.json
+
 # project specific — large/generated files
 scripts/specs_raw.json
 scripts/resultados_teste.json
