@@ -3,19 +3,20 @@ import { useState } from 'react'
 import QuizOption from '../QuizOption'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
+import { IluTopspin, IluFlat, IluAllCourt, IluDefensivo, IluNetRusher, IluDescoberto } from '../Illustrations'
 
 const OPCOES_A = [
-  { valor: 'topspin_fundo', label: 'Topspin do fundo',  desc: 'Bola alta e pesada no saibro' },
-  { valor: 'flat_basico',   label: 'Bola chapada',      desc: 'Direto ao ponto, sem efeito' },
-  { valor: 'descobrindo',   label: 'Ainda descobrindo', desc: 'Experimento estilos variados' },
+  { valor: 'topspin_fundo', label: 'Topspin do fundo',  desc: 'Bola alta e pesada',      illustration: <IluTopspin /> },
+  { valor: 'flat_basico',   label: 'Bola chapada',      desc: 'Direto ao ponto',          illustration: <IluFlat /> },
+  { valor: 'descobrindo',   label: 'Ainda descobrindo', desc: 'Experimento estilos',      illustration: <IluDescoberto /> },
 ]
 
 const OPCOES_B = [
-  { valor: 'topspin_pesado',       label: 'Topspin pesado',     desc: 'Muita rotação, cria ângulos' },
-  { valor: 'serve_flat_agressivo', label: 'Saque agressivo',    desc: 'Pontos rápidos, bola plana' },
-  { valor: 'all_court',            label: 'All court',          desc: 'Versátil em qualquer situação' },
-  { valor: 'defensivo_contador',   label: 'Defesa e paciência', desc: 'Consistência, espero o erro' },
-  { valor: 'net_rusher',           label: 'Ataque na rede',     desc: 'Voleios e smashes' },
+  { valor: 'topspin_pesado',       label: 'Topspin pesado',     desc: 'Muita rotação, cria ângulos',  illustration: <IluTopspin /> },
+  { valor: 'serve_flat_agressivo', label: 'Saque agressivo',    desc: 'Pontos rápidos, bola plana',   illustration: <IluFlat /> },
+  { valor: 'all_court',            label: 'All court',          desc: 'Versátil em qualquer situação',illustration: <IluAllCourt /> },
+  { valor: 'defensivo_contador',   label: 'Defesa e paciência', desc: 'Consistência, espero o erro',  illustration: <IluDefensivo /> },
+  { valor: 'net_rusher',           label: 'Ataque na rede',     desc: 'Voleios e smashes',            illustration: <IluNetRusher /> },
 ]
 
 type Props = { onNext: (v: any) => void; historico?: string; valorAtual?: string }
@@ -34,18 +35,15 @@ export default function StepEstilo({ onNext, historico, valorAtual }: Props) {
       <QuizGrid opcoes={pares} selecionado={s} onEscolher={escolher} />
       {ultimo && (
         <div style={{ marginTop: '8px' }}>
-          <QuizOption label={ultimo.label} desc={ultimo.desc}
+          <QuizOption label={ultimo.label} desc={ultimo.desc} illustration={ultimo.illustration}
             selected={s === ultimo.valor} onClick={() => escolher(ultimo.valor)} />
         </div>
       )}
       <button onClick={() => escolher('all_court')} style={{
-        display: 'block', width: '100%', marginTop: '14px',
-        background: 'none', border: 'none', color: '#bbb',
-        fontSize: '0.8125rem', cursor: 'pointer', padding: '4px 0', textAlign: 'center',
+        display: 'block', width: '100%', marginTop: '14px', background: 'none', border: 'none',
+        color: '#bbb', fontSize: '0.8125rem', cursor: 'pointer', padding: '4px 0', textAlign: 'center',
         fontFamily: 'var(--font-body)',
-      }}>
-        Prefiro não dizer
-      </button>
+      }}>Prefiro não dizer</button>
     </div>
   )
 }

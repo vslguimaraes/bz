@@ -2,12 +2,13 @@
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
+import { IluRecreativo, IluDesenvolvendo, IluCompetitivo, IluRetorno } from '../Illustrations'
 
 const OPCOES = [
-  { valor: 'recreativo',         label: 'Jogo pelo prazer',      desc: 'Partidas sociais, sem compromisso' },
-  { valor: 'desenvolvendo',      label: 'Tô evoluindo',          desc: 'Aulas ou treino com objetivo' },
-  { valor: 'competitivo',        label: 'Compito em torneios',   desc: 'Federado ou ligas competitivas' },
-  { valor: 'base_forte_retorno', label: 'Voltando ao tênis',     desc: 'Joguei bastante e estou retomando' },
+  { valor: 'recreativo',         label: 'Jogo pelo prazer',    desc: 'Partidas sociais, sem compromisso',    illustration: <IluRecreativo /> },
+  { valor: 'desenvolvendo',      label: 'Tô evoluindo',        desc: 'Aulas ou treino com objetivo',         illustration: <IluDesenvolvendo /> },
+  { valor: 'competitivo',        label: 'Compito em torneios', desc: 'Federado ou ligas competitivas',       illustration: <IluCompetitivo /> },
+  { valor: 'base_forte_retorno', label: 'Voltando ao tênis',   desc: 'Joguei bastante e estou retomando',   illustration: <IluRetorno /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }

@@ -98,17 +98,17 @@ export default function QuizShell() {
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       background: 'var(--court-dark)', position: 'relative', overflow: 'hidden',
     }} className="grain">
-      {/* Fundo diagonal clay / grass */}
+      {/* Foto de raquete sobre quadra */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
-        background: 'linear-gradient(135deg, #9B4520 0%, #C4622D 40%, #1A1A18 60%)',
-        opacity: 0.9,
+        backgroundImage: 'url(https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=1400&q=80)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }} />
-      {/* Linhas de quadra sutis */}
+      {/* Overlay escuro para legibilidade */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1,
-        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.04) 60px, rgba(255,255,255,0.04) 61px),
-                          repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.04) 60px, rgba(255,255,255,0.04) 61px)`,
+        background: 'linear-gradient(180deg, rgba(26,26,24,0.55) 0%, rgba(26,26,24,0.75) 60%, rgba(26,26,24,0.95) 100%)',
       }} />
 
       <div style={{
@@ -145,25 +145,30 @@ export default function QuizShell() {
           onClick={() => setEstado('quiz')}
           style={{
             marginTop: '40px',
-            padding: '16px 48px',
-            background: 'var(--warm-white)',
-            color: 'var(--court-dark)',
-            border: 'none',
-            borderRadius: '2px',
+            padding: '18px 56px',
+            background: '#FFFFFF',
+            color: '#1A1A18',
+            border: '2px solid #FFFFFF',
+            borderRadius: '3px',
             fontFamily: 'var(--font-body)',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            letterSpacing: '0.12em',
+            fontSize: '0.9375rem',
+            fontWeight: 700,
+            letterSpacing: '0.1em',
             textTransform: 'uppercase',
             cursor: 'pointer',
             transition: 'all 200ms ease',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = 'var(--clay-dust)'
+            e.currentTarget.style.background = 'var(--clay)'
+            e.currentTarget.style.borderColor = 'var(--clay)'
+            e.currentTarget.style.color = '#FFFFFF'
             e.currentTarget.style.transform = 'translateY(-2px)'
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = 'var(--warm-white)'
+            e.currentTarget.style.background = '#FFFFFF'
+            e.currentTarget.style.borderColor = '#FFFFFF'
+            e.currentTarget.style.color = '#1A1A18'
             e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
@@ -196,7 +201,7 @@ export default function QuizShell() {
 
   if (estado === 'loading')  return <TelaLoading />
   if (estado === 'resultado' && resultado) return (
-    <TelaResultado resultado={resultado} perfil={perfil} onReiniciar={() => {
+    <TelaResultado resultado={resultado} onReiniciar={() => {
       setPerfil({}); setStepIndex(0); setEstado('intro'); setResultado(null)
     }} />
   )

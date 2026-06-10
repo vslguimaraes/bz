@@ -2,12 +2,13 @@
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
+import { IluPoucos, IluSemanal, IluFrequente, IluIntenso } from '../Illustrations'
 
 const OPCOES = [
-  { valor: 'poucos_meses', label: '1x por mês',     desc: 'Jogo esporadicamente' },
-  { valor: 'semanal',      label: '2–5x por mês',   desc: 'Jogo com regularidade' },
-  { valor: 'frequente',    label: '5–10x por mês',  desc: 'Faz parte da rotina' },
-  { valor: 'intenso',      label: 'Quase todo dia', desc: 'Treino ou competição diária' },
+  { valor: 'poucos_meses', label: '1x por mês',     desc: 'Jogo esporadicamente',        illustration: <IluPoucos /> },
+  { valor: 'semanal',      label: '2–5x por mês',   desc: 'Jogo com regularidade',       illustration: <IluSemanal /> },
+  { valor: 'frequente',    label: '5–10x por mês',  desc: 'Faz parte da rotina',         illustration: <IluFrequente /> },
+  { valor: 'intenso',      label: 'Quase todo dia', desc: 'Treino ou competição diária', illustration: <IluIntenso /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }

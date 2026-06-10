@@ -2,11 +2,12 @@
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
+import { IluAltaMobilidade, IluModerada, IluReduzida } from '../Illustrations'
 
 const OPCOES = [
-  { valor: 'alta_mobilidade',     label: 'Me movo bem',       desc: 'Deslizo e corro de ponta a ponta' },
-  { valor: 'mobilidade_moderada', label: 'Razoável',          desc: 'Cubro sem explosão' },
-  { valor: 'mobilidade_reduzida', label: 'Prefiro posição',   desc: 'Centro da quadra, antecipação' },
+  { valor: 'alta_mobilidade',     label: 'Me movo bem',     desc: 'Deslizo, corro de ponta a ponta', illustration: <IluAltaMobilidade /> },
+  { valor: 'mobilidade_moderada', label: 'Razoável',        desc: 'Cubro sem explosão',              illustration: <IluModerada /> },
+  { valor: 'mobilidade_reduzida', label: 'Prefiro posição', desc: 'Centro da quadra, antecipação',   illustration: <IluReduzida /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }

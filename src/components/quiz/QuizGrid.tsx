@@ -1,7 +1,14 @@
 'use client'
+import { ReactNode } from 'react'
 import QuizOption from './QuizOption'
 
-type Opcao = { valor: string; label: string; desc?: string; large?: boolean }
+type Opcao = {
+  valor: string
+  label: string
+  desc?: string
+  illustration?: ReactNode
+  large?: boolean
+}
 
 type Props = {
   opcoes: Opcao[]
@@ -21,6 +28,7 @@ export default function QuizGrid({ opcoes, selecionado, onEscolher, escapeLabel,
             key={o.valor}
             label={o.label}
             desc={o.desc}
+            illustration={o.illustration}
             large={o.large}
             selected={selecionado === o.valor}
             onClick={() => onEscolher(o.valor)}
