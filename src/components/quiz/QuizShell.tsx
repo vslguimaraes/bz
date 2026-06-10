@@ -24,7 +24,8 @@ export type Perfil = {
 
 type Estado = 'quiz' | 'loading' | 'resultado'
 
-// Sequência de steps baseada no histórico
+const TORNEIOS = ['Roland Garros', 'Wimbledon', 'US Open', 'Australian Open', 'Rio Open']
+
 function getSteps(historico?: string): string[] {
   if (historico === 'recreativo') {
     return ['historico', 'tecnico', 'mobilidade', 'lesao', 'raquete', 'frequencia']
@@ -32,13 +33,11 @@ function getSteps(historico?: string): string[] {
   return ['historico', 'tecnico', 'estilo', 'mobilidade', 'lesao', 'raquete', 'frequencia']
 }
 
-// Número do step visível (sempre "X de 7")
-function getStepLabel(step: string, steps: string[]): number {
+function getStepNum(step: string): number {
   const map: Record<string, number> = {
     historico: 1, tecnico: 2, estilo: 3, mobilidade: 4, lesao: 5, raquete: 6, frequencia: 7,
   }
-  // recreativo pula estilo, mas ainda mostra "de 6"
-  return map[step] ?? steps.indexOf(step) + 1
+  return map[step] ?? 1
 }
 
 export default function QuizShell() {
@@ -57,15 +56,11 @@ export default function QuizShell() {
     const novoPerfil = { ...perfil, ...valor }
     setPerfil(novoPerfil)
     setDirection('forward')
-
     const novosSteps = getSteps(novoPerfil.historico)
-    const novoIndex = stepIndex + 1
-
-    if (novoIndex >= novosSteps.length) {
-      // Último step — enviar para API
+    if (stepIndex + 1 >= novosSteps.length) {
       enviarPerfil(novoPerfil)
     } else {
-      setStepIndex(novoIndex)
+      setStepIndex(i => i + 1)
     }
   }, [perfil, stepIndex])
 
@@ -79,14 +74,10 @@ export default function QuizShell() {
     setEstado('loading')
     setErro(null)
     try {
-      // Mapear valores do quiz para o formato da API
       const lesaoMap: Record<string, string> = {
-        sem_lesao: 'nenhuma',
-        epicondilite: 'cotovelo',
-        ombro: 'ombro',
-        vibracoes_gerais: 'vibracao',
+        sem_lesao: 'nenhuma', epicondilite: 'cotovelo',
+        ombro: 'ombro', vibracoes_gerais: 'vibracao',
       }
-
       const payload = {
         historico: p.historico ?? 'recreativo',
         tecnico: p.tecnico ?? 'basico',
@@ -97,20 +88,16 @@ export default function QuizShell() {
           ? p.raquete_atual : undefined,
         arquetipo_pro: p.arquetipo_pro ?? [],
       }
-
       const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-
       if (!res.ok) {
         const err = await res.json()
         throw new Error(err.error ?? 'Erro desconhecido')
       }
-
-      const data = await res.json()
-      setResultado(data)
+      setResultado(await res.json())
       setEstado('resultado')
     } catch (e: any) {
       setErro(e.message ?? 'Erro ao buscar recomendação')
@@ -121,63 +108,116 @@ export default function QuizShell() {
   if (estado === 'loading') return <TelaLoading />
   if (estado === 'resultado' && resultado) {
     return <TelaResultado resultado={resultado} perfil={perfil} onReiniciar={() => {
-      setPerfil({})
-      setStepIndex(0)
-      setEstado('quiz')
-      setResultado(null)
+      setPerfil({}); setStepIndex(0); setEstado('quiz'); setResultado(null)
     }} />
   }
 
   const animClass = direction === 'forward' ? 'animate-slide-in-right' : 'animate-slide-in-left'
-  const stepNum = getStepLabel(currentStep, steps)
+  const stepNum = getStepNum(currentStep)
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
-         style={{ background: 'var(--color-creme)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--color-creme)', display: 'flex', flexDirection: 'column' }}>
 
-      {/* Header com progresso */}
-      <div className="w-full mb-6" style={{ maxWidth: 'var(--max-width-quiz)' }}>
-        <div className="flex items-center justify-between mb-3">
-          {stepIndex > 0 ? (
-            <button onClick={voltar} className="flex items-center gap-1 text-sm"
-                    style={{ color: 'var(--color-cinza-medium)', background: 'none', border: 'none', cursor: 'pointer' }}>
-              ← Voltar
-            </button>
-          ) : <div />}
-          <span className="text-sm font-medium" style={{ color: 'var(--color-cinza-medium)' }}>
-            {stepNum} de {totalVisible}
+      {/* Header premium com referências de torneios */}
+      <header style={{
+        borderBottom: '1px solid var(--color-creme-dark)',
+        padding: '12px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'var(--color-branco)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '1.25rem' }}>🎾</span>
+          <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-cinza)' }}>
+            Raquete Ideal
           </span>
         </div>
+        {/* Torneios como badges sutis */}
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          {TORNEIOS.map((t, i) => (
+            <span key={t} style={{
+              fontSize: '0.6875rem', fontWeight: 500,
+              padding: '3px 8px', borderRadius: 'var(--radius-full)',
+              background: i === 0 ? '#E8622A22' : i === 1 ? '#4A7C5922' : '#2C2C2C11',
+              color: i === 0 ? 'var(--color-laranja-dark)' : i === 1 ? 'var(--color-saibro-dark)' : 'var(--color-cinza-medium)',
+            }}>
+              {t}
+            </span>
+          ))}
+        </div>
+      </header>
 
-        {/* Barra de progresso */}
-        <div className="h-1 w-full rounded-full overflow-hidden" style={{ background: 'var(--color-creme-dark)' }}>
-          <div className="h-full rounded-full transition-all duration-500"
-               style={{
-                 background: 'var(--color-saibro)',
-                 width: `${(stepNum / totalVisible) * 100}%`,
-               }} />
+      {/* Conteúdo do quiz */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 16px 24px' }}>
+        <div style={{ width: '100%', maxWidth: '480px' }}>
+
+          {/* Progresso */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+            {stepIndex > 0 ? (
+              <button onClick={voltar} style={{
+                background: 'none', border: 'none', color: 'var(--color-cinza-medium)',
+                fontSize: '0.875rem', cursor: 'pointer', padding: '4px 0',
+                display: 'flex', alignItems: 'center', gap: '4px',
+              }}>
+                ← Voltar
+              </button>
+            ) : <div />}
+            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-cinza-medium)' }}>
+              {stepNum} de {totalVisible}
+            </span>
+          </div>
+
+          {/* Barra de progresso */}
+          <div style={{ height: '3px', width: '100%', borderRadius: '99px', background: 'var(--color-creme-dark)', marginBottom: '20px' }}>
+            <div style={{
+              height: '100%', borderRadius: '99px',
+              background: 'linear-gradient(90deg, var(--color-saibro), var(--color-saibro-light))',
+              width: `${(stepNum / totalVisible) * 100}%`,
+              transition: 'width 400ms ease',
+            }} />
+          </div>
+
+          {/* Erro */}
+          {erro && (
+            <div style={{
+              marginBottom: '12px', padding: '10px 14px', borderRadius: 'var(--radius-md)',
+              background: '#FEE2E2', color: '#DC2626', fontSize: '0.875rem',
+            }}>
+              {erro} — tente novamente.
+            </div>
+          )}
+
+          {/* Step atual */}
+          <div key={`${currentStep}-${stepIndex}`} className={animClass}>
+            {currentStep === 'historico'  && <StepHistorico  onNext={avancar} valorAtual={perfil.historico} />}
+            {currentStep === 'tecnico'    && <StepTecnico    onNext={avancar} valorAtual={perfil.tecnico} />}
+            {currentStep === 'estilo'     && <StepEstilo     onNext={avancar} historico={perfil.historico} valorAtual={perfil.estilo} />}
+            {currentStep === 'mobilidade' && <StepMobilidade onNext={avancar} valorAtual={perfil.mobilidade} />}
+            {currentStep === 'lesao'      && <StepLesao      onNext={avancar} valorAtual={perfil.lesao} />}
+            {currentStep === 'raquete'    && <StepRaquete    onNext={avancar} valorAtual={perfil.raquete_atual} />}
+            {currentStep === 'frequencia' && <StepFrequencia onNext={avancar} valorAtual={perfil.frequencia} />}
+          </div>
+
         </div>
       </div>
 
-      {/* Card do quiz */}
-      <div key={`${currentStep}-${stepIndex}`} className={`w-full ${animClass}`}
-           style={{ maxWidth: 'var(--max-width-quiz)' }}>
-
-        {erro && (
-          <div className="mb-4 p-3 rounded-xl text-sm text-center"
-               style={{ background: '#FEE2E2', color: '#DC2626', borderRadius: 'var(--radius-md)' }}>
-            {erro} — tente novamente.
+      {/* Footer com decoração de quadra */}
+      <footer style={{
+        borderTop: '1px solid var(--color-creme-dark)',
+        padding: '10px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px',
+        background: 'var(--color-branco)',
+      }}>
+        {[
+          { cor: '#C84B2F', label: 'Saibro' },
+          { cor: '#3E7D4E', label: 'Grama' },
+          { cor: '#3A6B9E', label: 'Piso duro' },
+        ].map(s => (
+          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: s.cor }} />
+            <span style={{ fontSize: '0.6875rem', color: 'var(--color-cinza-light)', fontWeight: 500 }}>{s.label}</span>
           </div>
-        )}
-
-        {currentStep === 'historico'  && <StepHistorico  onNext={avancar} valorAtual={perfil.historico} />}
-        {currentStep === 'tecnico'    && <StepTecnico    onNext={avancar} valorAtual={perfil.tecnico} />}
-        {currentStep === 'estilo'     && <StepEstilo     onNext={avancar} historico={perfil.historico} valorAtual={perfil.estilo} />}
-        {currentStep === 'mobilidade' && <StepMobilidade onNext={avancar} valorAtual={perfil.mobilidade} />}
-        {currentStep === 'lesao'      && <StepLesao      onNext={avancar} valorAtual={perfil.lesao} />}
-        {currentStep === 'raquete'    && <StepRaquete    onNext={avancar} valorAtual={perfil.raquete_atual} />}
-        {currentStep === 'frequencia' && <StepFrequencia onNext={avancar} valorAtual={perfil.frequencia} />}
-      </div>
+        ))}
+      </footer>
     </div>
   )
 }

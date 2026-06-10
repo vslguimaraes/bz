@@ -1,7 +1,7 @@
 'use client'
 import QuizOption from './QuizOption'
 
-type Opcao = { valor: string; emoji: string; label: string; large?: boolean }
+type Opcao = { valor: string; emoji: string; label: string; desc?: string; large?: boolean }
 
 type Props = {
   opcoes: Opcao[]
@@ -9,37 +9,36 @@ type Props = {
   onEscolher: (valor: string) => void
   escapeLabel?: string
   onEscape?: () => void
-  /** forçar 1 coluna (lista vertical) */
-  lista?: boolean
+  cols?: number  // colunas do grid (default 2)
 }
 
-export default function QuizGrid({ opcoes, selecionado, onEscolher, escapeLabel, onEscape, lista }: Props) {
+export default function QuizGrid({ opcoes, selecionado, onEscolher, escapeLabel, onEscape, cols = 2 }: Props) {
   return (
     <div>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: lista ? '1fr' : 'repeat(2, 1fr)',
-        gap: '12px',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: '10px',
       }}>
         {opcoes.map(o => (
           <QuizOption
             key={o.valor}
             emoji={o.emoji}
             label={o.label}
+            desc={o.desc}
             large={o.large}
             selected={selecionado === o.valor}
             onClick={() => onEscolher(o.valor)}
           />
         ))}
       </div>
-
       {escapeLabel && (
         <button onClick={onEscape} style={{
-          display: 'block', width: '100%', marginTop: '14px',
+          display: 'block', width: '100%', marginTop: '12px',
           background: 'none', border: 'none',
           color: 'var(--color-cinza-light)',
-          fontSize: '0.875rem', cursor: 'pointer',
-          padding: '6px 0', textAlign: 'center',
+          fontSize: '0.8125rem', cursor: 'pointer',
+          padding: '4px 0', textAlign: 'center',
         }}>
           {escapeLabel}
         </button>

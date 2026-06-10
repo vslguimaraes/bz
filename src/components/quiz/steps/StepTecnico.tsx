@@ -3,10 +3,10 @@ import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 
 const OPCOES = [
-  { valor: 'basico',        emoji: '🎯', label: 'Forehand e backhand diretos' },
-  { valor: 'em_construcao', emoji: '🌀', label: 'Começo a usar efeito' },
-  { valor: 'intermediario', emoji: '⚡', label: 'Topspin consistente' },
-  { valor: 'avancado',      emoji: '🎪', label: 'Vario ritmo e altura' },
+  { valor: 'basico',        emoji: '🎯', label: 'Forehand e backhand', desc: 'Bola limpa, sem efeito' },
+  { valor: 'em_construcao', emoji: '🌀', label: 'Começo a usar efeito', desc: 'Topspin inconsistente ainda' },
+  { valor: 'intermediario', emoji: '⚡', label: 'Topspin consistente',  desc: 'Slice funcional, abro o jogo' },
+  { valor: 'avancado',      emoji: '🎪', label: 'Vario ritmo e altura', desc: 'Rede, drop shot, todos os golpes' },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
@@ -27,13 +27,8 @@ export default function StepTecnico({ onNext, valorAtual }: Props) {
       <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '20px', fontSize: '0.9rem' }}>
         Foque no que você faz com mais frequência em quadra.
       </p>
-      <QuizGrid
-        opcoes={OPCOES}
-        selecionado={selecionado}
-        onEscolher={escolher}
-        escapeLabel="Não sei classificar →"
-        onEscape={() => escolher('basico')}
-      />
+      <QuizGrid opcoes={OPCOES} selecionado={selecionado} onEscolher={escolher}
+        escapeLabel="Não sei classificar →" onEscape={() => escolher('basico')} />
     </div>
   )
 }

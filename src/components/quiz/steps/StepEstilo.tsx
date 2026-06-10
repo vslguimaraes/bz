@@ -1,19 +1,20 @@
 'use client'
 import { useState } from 'react'
 import QuizOption from '../QuizOption'
+import QuizGrid from '../QuizGrid'
 
 const OPCOES_A = [
-  { valor: 'topspin_fundo', emoji: '🌀', label: 'Do fundo, girando a bola' },
-  { valor: 'flat_basico',   emoji: '➡️', label: 'Bola chapada e direta' },
-  { valor: 'descobrindo',   emoji: '🔍', label: 'Ainda estou descobrindo' },
+  { valor: 'topspin_fundo', emoji: '🌀', label: 'Topspin do fundo',  desc: 'Bola alta e pesada no saibro' },
+  { valor: 'flat_basico',   emoji: '➡️', label: 'Bola chapada',      desc: 'Direto ao ponto, sem efeito' },
+  { valor: 'descobrindo',   emoji: '🔍', label: 'Estou descobrindo', desc: 'Experimenta estilos variados' },
 ]
 
 const OPCOES_B = [
-  { valor: 'topspin_pesado',       emoji: '🌪️', label: 'Topspin pesado' },
-  { valor: 'serve_flat_agressivo', emoji: '💥', label: 'Saque e bola plana' },
-  { valor: 'all_court',            emoji: '🎭', label: 'Adapto ao momento' },
-  { valor: 'defensivo_contador',   emoji: '🛡️', label: 'Defendo e contra-ataco' },
-  { valor: 'net_rusher',           emoji: '🚀', label: 'Busco a rede' },
+  { valor: 'topspin_pesado',       emoji: '🌪️', label: 'Topspin pesado',     desc: 'Bola com muita rotação' },
+  { valor: 'serve_flat_agressivo', emoji: '💥', label: 'Saque agressivo',    desc: 'Pontos rápidos, bola plana' },
+  { valor: 'all_court',            emoji: '🎭', label: 'Adapto ao momento',  desc: 'Versátil em qualquer quadra' },
+  { valor: 'defensivo_contador',   emoji: '🛡️', label: 'Defesa e paciência', desc: 'Consistência, espero o erro' },
+  { valor: 'net_rusher',           emoji: '🚀', label: 'Busco a rede',       desc: 'Voleios e smashes' },
 ]
 
 type Props = { onNext: (v: any) => void; historico?: string; valorAtual?: string }
@@ -27,8 +28,7 @@ export default function StepEstilo({ onNext, historico, valorAtual }: Props) {
     setTimeout(() => onNext({ estilo: valor }), 250)
   }
 
-  // Grid 2x2, último item (se ímpar) ocupa linha inteira
-  const pares = opcoes.slice(0, opcoes.length % 2 === 0 ? opcoes.length : opcoes.length - 1)
+  const pares = opcoes.length % 2 === 0 ? opcoes : opcoes.slice(0, opcoes.length - 1)
   const ultimo = opcoes.length % 2 !== 0 ? opcoes[opcoes.length - 1] : null
 
   return (
@@ -40,24 +40,19 @@ export default function StepEstilo({ onNext, historico, valorAtual }: Props) {
         Pense no seu golpe favorito e como você constrói os pontos.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-        {pares.map(o => (
-          <QuizOption key={o.valor} emoji={o.emoji} label={o.label}
-            selected={selecionado === o.valor} onClick={() => escolher(o.valor)} />
-        ))}
-      </div>
+      <QuizGrid opcoes={pares} selecionado={selecionado} onEscolher={escolher} />
 
       {ultimo && (
-        <div style={{ marginTop: '12px' }}>
-          <QuizOption emoji={ultimo.emoji} label={ultimo.label}
+        <div style={{ marginTop: '10px' }}>
+          <QuizOption emoji={ultimo.emoji} label={ultimo.label} desc={ultimo.desc}
             selected={selecionado === ultimo.valor} onClick={() => escolher(ultimo.valor)} />
         </div>
       )}
 
       <button onClick={() => escolher('all_court')} style={{
-        display: 'block', width: '100%', marginTop: '14px',
+        display: 'block', width: '100%', marginTop: '12px',
         background: 'none', border: 'none', color: 'var(--color-cinza-light)',
-        fontSize: '0.875rem', cursor: 'pointer', padding: '6px 0', textAlign: 'center',
+        fontSize: '0.8125rem', cursor: 'pointer', padding: '4px 0', textAlign: 'center',
       }}>
         Prefiro não dizer →
       </button>

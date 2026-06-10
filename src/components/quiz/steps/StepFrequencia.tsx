@@ -3,10 +3,10 @@ import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 
 const OPCOES = [
-  { valor: 'poucos_meses', emoji: '🌙', label: 'Menos de 1x por mês' },
-  { valor: 'semanal',      emoji: '📅', label: '1 a 2x por mês' },
-  { valor: 'frequente',    emoji: '💪', label: '1 a 2x por semana' },
-  { valor: 'intenso',      emoji: '🔥', label: 'Quase todo dia' },
+  { valor: 'poucos_meses', emoji: '🌙', label: '1x por mês',      desc: 'Jogo esporadicamente' },
+  { valor: 'semanal',      emoji: '📅', label: '2–5x por mês',    desc: 'Jogo com regularidade' },
+  { valor: 'frequente',    emoji: '💪', label: '5–10x por mês',   desc: 'Faz parte da rotina' },
+  { valor: 'intenso',      emoji: '🔥', label: 'Quase todo dia',  desc: 'Treino ou competição diária' },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
