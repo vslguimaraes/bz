@@ -1,11 +1,11 @@
 'use client'
 import { useState } from 'react'
-import QuizOption from '../QuizOption'
+import QuizGrid from '../QuizGrid'
 
 const OPCOES = [
-  { valor: 'alta_mobilidade',    emoji: '⚡', label: 'Me movo bem, deslizo e corro',       desc: 'Sprint lateral, recupero posição rápido' },
-  { valor: 'mobilidade_moderada',emoji: '🚶', label: 'Razoável — cubro bem sem explosão',  desc: 'Eficiente, não perco muita bola por movimento' },
-  { valor: 'mobilidade_reduzida',emoji: '🎯', label: 'Economizo movimento, prefiro posição', desc: 'Prefiro posição central e antecipação' },
+  { valor: 'alta_mobilidade',     emoji: '⚡', label: 'Me movo bem e deslizo' },
+  { valor: 'mobilidade_moderada', emoji: '🚶', label: 'Cubro bem sem explosão' },
+  { valor: 'mobilidade_reduzida', emoji: '🎯', label: 'Prefiro posição central' },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
@@ -18,24 +18,21 @@ export default function StepMobilidade({ onNext, valorAtual }: Props) {
     setTimeout(() => onNext({ mobilidade: valor }), 250)
   }
 
+  const pares = OPCOES.slice(0, 2)
+  const ultimo = OPCOES[2]
+
   return (
     <div>
-      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px', lineHeight: 1.25 }}>
-        Como você descreveria sua movimentação em quadra?
+      <h2 style={{ fontSize: '1.375rem', fontWeight: 700, marginBottom: '6px', lineHeight: 1.25 }}>
+        Como é sua movimentação em quadra?
       </h2>
-      <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '24px', fontSize: '0.9375rem' }}>
-        Seja honesto — isso influencia diretamente o peso e balanço ideal da raquete.
+      <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '20px', fontSize: '0.9rem' }}>
+        Isso define o peso e balanço ideal da raquete para você.
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {OPCOES.map(o => (
-          <QuizOption key={o.valor} {...o} selected={selecionado === o.valor} onClick={() => escolher(o.valor)} />
-        ))}
-        <button onClick={() => escolher('mobilidade_moderada')} style={{
-          background: 'none', border: 'none', color: 'var(--color-cinza-light)',
-          fontSize: '0.875rem', cursor: 'pointer', padding: '8px 0', textAlign: 'center',
-        }}>
-          Prefiro não dizer →
-        </button>
+      <QuizGrid opcoes={pares} selecionado={selecionado} onEscolher={escolher} />
+      <div style={{ marginTop: '12px' }}>
+        <QuizGrid opcoes={[ultimo]} selecionado={selecionado} onEscolher={escolher}
+          escapeLabel="Prefiro não dizer →" onEscape={() => escolher('mobilidade_moderada')} />
       </div>
     </div>
   )

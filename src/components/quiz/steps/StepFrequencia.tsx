@@ -1,12 +1,12 @@
 'use client'
 import { useState } from 'react'
-import QuizOption from '../QuizOption'
+import QuizGrid from '../QuizGrid'
 
 const OPCOES = [
-  { valor: 'poucos_meses', emoji: '🌙', label: 'Vez ou outra, menos de 1x/semana', desc: 'Jogo esporadicamente quando dá' },
-  { valor: 'semanal',      emoji: '📅', label: '1 a 2x por semana',               desc: 'Partida consistente, mas não todo dia' },
-  { valor: 'frequente',    emoji: '💪', label: '3 a 4x por semana',               desc: 'Jogo é parte da minha rotina' },
-  { valor: 'intenso',      emoji: '🔥', label: 'Quase todo dia',                  desc: 'Treino diário ou competição regular' },
+  { valor: 'poucos_meses', emoji: '🌙', label: 'Menos de 1x por mês' },
+  { valor: 'semanal',      emoji: '📅', label: '1 a 2x por mês' },
+  { valor: 'frequente',    emoji: '💪', label: '1 a 2x por semana' },
+  { valor: 'intenso',      emoji: '🔥', label: 'Quase todo dia' },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
@@ -21,23 +21,19 @@ export default function StepFrequencia({ onNext, valorAtual }: Props) {
 
   return (
     <div>
-      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px', lineHeight: 1.25 }}>
+      <h2 style={{ fontSize: '1.375rem', fontWeight: 700, marginBottom: '6px', lineHeight: 1.25 }}>
         Com que frequência você joga tênis?
       </h2>
-      <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '24px', fontSize: '0.9375rem' }}>
+      <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '20px', fontSize: '0.9rem' }}>
         Última pergunta! Isso influencia a recomendação de cordas e durabilidade.
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {OPCOES.map(o => (
-          <QuizOption key={o.valor} {...o} selected={selecionado === o.valor} onClick={() => escolher(o.valor)} />
-        ))}
-        <button onClick={() => escolher('semanal')} style={{
-          background: 'none', border: 'none', color: 'var(--color-cinza-light)',
-          fontSize: '0.875rem', cursor: 'pointer', padding: '8px 0', textAlign: 'center',
-        }}>
-          Prefiro não dizer →
-        </button>
-      </div>
+      <QuizGrid
+        opcoes={OPCOES}
+        selecionado={selecionado}
+        onEscolher={escolher}
+        escapeLabel="Prefiro não dizer →"
+        onEscape={() => escolher('semanal')}
+      />
     </div>
   )
 }

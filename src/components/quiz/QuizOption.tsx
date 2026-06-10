@@ -3,41 +3,37 @@
 type Props = {
   emoji: string
   label: string
-  desc?: string
   selected?: boolean
   onClick: () => void
+  large?: boolean  // opção destaque (maior)
 }
 
-export default function QuizOption({ emoji, label, desc, selected, onClick }: Props) {
+export default function QuizOption({ emoji, label, selected, onClick, large }: Props) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left transition-all duration-150"
       style={{
         background: selected ? 'var(--color-saibro)' : 'var(--color-branco)',
         color: selected ? '#fff' : 'var(--color-cinza)',
         border: `2px solid ${selected ? 'var(--color-saibro)' : 'var(--color-creme-dark)'}`,
-        borderRadius: 'var(--radius-md)',
-        padding: '16px 20px',
+        borderRadius: 'var(--radius-lg)',
+        padding: large ? '28px 16px' : '20px 12px',
         cursor: 'pointer',
         boxShadow: selected ? '0 4px 16px rgba(74,124,89,0.25)' : 'var(--shadow-sm)',
-        transform: selected ? 'scale(1.01)' : 'scale(1)',
+        transform: selected ? 'scale(1.03)' : 'scale(1)',
+        transition: 'all 150ms ease',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: '14px',
+        justifyContent: 'center',
+        gap: '10px',
+        width: '100%',
+        minHeight: large ? '120px' : '90px',
+        textAlign: 'center',
       }}
     >
-      <span style={{ fontSize: '1.75rem', lineHeight: 1 }}>{emoji}</span>
-      <div>
-        <div style={{ fontWeight: 600, fontSize: '1rem', lineHeight: 1.3 }}>{label}</div>
-        {desc && (
-          <div style={{
-            fontSize: '0.8125rem',
-            marginTop: '2px',
-            color: selected ? 'rgba(255,255,255,0.8)' : 'var(--color-cinza-medium)',
-          }}>{desc}</div>
-        )}
-      </div>
+      <span style={{ fontSize: large ? '2.5rem' : '2rem', lineHeight: 1 }}>{emoji}</span>
+      <span style={{ fontWeight: 600, fontSize: large ? '0.9375rem' : '0.875rem', lineHeight: 1.25 }}>{label}</span>
     </button>
   )
 }
