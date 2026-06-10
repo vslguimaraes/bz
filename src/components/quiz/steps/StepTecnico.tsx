@@ -1,34 +1,25 @@
 'use client'
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
+import StepHeader from '../StepHeader'
 
 const OPCOES = [
-  { valor: 'basico',        emoji: '🎯', label: 'Forehand e backhand', desc: 'Bola limpa, sem efeito' },
-  { valor: 'em_construcao', emoji: '🌀', label: 'Começo a usar efeito', desc: 'Topspin inconsistente ainda' },
-  { valor: 'intermediario', emoji: '⚡', label: 'Topspin consistente',  desc: 'Slice funcional, abro o jogo' },
-  { valor: 'avancado',      emoji: '🎪', label: 'Vario ritmo e altura', desc: 'Rede, drop shot, todos os golpes' },
+  { valor: 'basico',        label: 'Forehand e backhand',    desc: 'Bola limpa, sem efeito' },
+  { valor: 'em_construcao', label: 'Começo a usar efeito',   desc: 'Topspin inconsistente ainda' },
+  { valor: 'intermediario', label: 'Topspin consistente',    desc: 'Slice funcional, abro o jogo' },
+  { valor: 'avancado',      label: 'Jogo completo',          desc: 'Rede, drop shot, todos os golpes' },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
 
 export default function StepTecnico({ onNext, valorAtual }: Props) {
-  const [selecionado, setSelecionado] = useState(valorAtual ?? '')
-
-  function escolher(valor: string) {
-    setSelecionado(valor)
-    setTimeout(() => onNext({ tecnico: valor }), 250)
-  }
-
+  const [s, setS] = useState(valorAtual ?? '')
+  function escolher(v: string) { setS(v); setTimeout(() => onNext({ tecnico: v }), 220) }
   return (
     <div>
-      <h2 style={{ fontSize: '1.375rem', fontWeight: 700, marginBottom: '6px', lineHeight: 1.25 }}>
-        Como você descreveria seu jogo hoje?
-      </h2>
-      <p style={{ color: 'var(--color-cinza-medium)', marginBottom: '20px', fontSize: '0.9rem' }}>
-        Foque no que você faz com mais frequência em quadra.
-      </p>
-      <QuizGrid opcoes={OPCOES} selecionado={selecionado} onEscolher={escolher}
-        escapeLabel="Não sei classificar →" onEscape={() => escolher('basico')} />
+      <StepHeader question="Como você descreveria seu jogo hoje?" hint="Foque no que você faz com mais frequência." />
+      <QuizGrid opcoes={OPCOES} selecionado={s} onEscolher={escolher}
+        escapeLabel="Não sei classificar" onEscape={() => escolher('basico')} />
     </div>
   )
 }

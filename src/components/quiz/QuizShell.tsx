@@ -22,50 +22,41 @@ export type Perfil = {
   arquetipo_pro?: string[]
 }
 
-type Estado = 'quiz' | 'loading' | 'resultado'
-
-const TORNEIOS = ['Roland Garros', 'Wimbledon', 'US Open', 'Australian Open', 'Rio Open']
+type Estado = 'intro' | 'quiz' | 'loading' | 'resultado'
 
 function getSteps(historico?: string): string[] {
-  if (historico === 'recreativo') {
-    return ['historico', 'tecnico', 'mobilidade', 'lesao', 'raquete', 'frequencia']
-  }
-  return ['historico', 'tecnico', 'estilo', 'mobilidade', 'lesao', 'raquete', 'frequencia']
+  if (historico === 'recreativo')
+    return ['historico','tecnico','mobilidade','lesao','raquete','frequencia']
+  return ['historico','tecnico','estilo','mobilidade','lesao','raquete','frequencia']
 }
 
 function getStepNum(step: string): number {
-  const map: Record<string, number> = {
-    historico: 1, tecnico: 2, estilo: 3, mobilidade: 4, lesao: 5, raquete: 6, frequencia: 7,
-  }
-  return map[step] ?? 1
+  return ({ historico:1, tecnico:2, estilo:3, mobilidade:4, lesao:5, raquete:6, frequencia:7 } as any)[step] ?? 1
 }
 
 export default function QuizShell() {
-  const [perfil, setPerfil] = useState<Perfil>({})
+  const [perfil, setPerfil]       = useState<Perfil>({})
   const [stepIndex, setStepIndex] = useState(0)
-  const [direction, setDirection] = useState<'forward' | 'back'>('forward')
-  const [estado, setEstado] = useState<Estado>('quiz')
+  const [direction, setDirection] = useState<'forward'|'back'>('forward')
+  const [estado, setEstado]       = useState<Estado>('intro')
   const [resultado, setResultado] = useState<any>(null)
-  const [erro, setErro] = useState<string | null>(null)
+  const [erro, setErro]           = useState<string|null>(null)
 
-  const steps = getSteps(perfil.historico)
+  const steps       = getSteps(perfil.historico)
   const currentStep = steps[stepIndex]
   const totalVisible = perfil.historico === 'recreativo' ? 6 : 7
 
   const avancar = useCallback((valor: Partial<Perfil>) => {
-    const novoPerfil = { ...perfil, ...valor }
-    setPerfil(novoPerfil)
+    const novo = { ...perfil, ...valor }
+    setPerfil(novo)
     setDirection('forward')
-    const novosSteps = getSteps(novoPerfil.historico)
-    if (stepIndex + 1 >= novosSteps.length) {
-      enviarPerfil(novoPerfil)
-    } else {
-      setStepIndex(i => i + 1)
-    }
+    const novosSteps = getSteps(novo.historico)
+    if (stepIndex + 1 >= novosSteps.length) enviarPerfil(novo)
+    else setStepIndex(i => i + 1)
   }, [perfil, stepIndex])
 
   const voltar = useCallback(() => {
-    if (stepIndex === 0) return
+    if (stepIndex === 0) { setEstado('intro'); return }
     setDirection('back')
     setStepIndex(i => i - 1)
   }, [stepIndex])
@@ -74,150 +65,221 @@ export default function QuizShell() {
     setEstado('loading')
     setErro(null)
     try {
-      const lesaoMap: Record<string, string> = {
-        sem_lesao: 'nenhuma', epicondilite: 'cotovelo',
-        ombro: 'ombro', vibracoes_gerais: 'vibracao',
-      }
-      const payload = {
-        historico: p.historico ?? 'recreativo',
-        tecnico: p.tecnico ?? 'basico',
-        estilo: p.estilo ?? 'flat_basico',
-        mobilidade: p.mobilidade ?? 'mobilidade_moderada',
-        lesao: lesaoMap[p.lesao ?? 'sem_lesao'] ?? 'nenhuma',
-        raquete_atual: (p.raquete_atual && p.raquete_atual !== 'nao_tenho' && p.raquete_atual !== 'nao_sei')
-          ? p.raquete_atual : undefined,
-        arquetipo_pro: p.arquetipo_pro ?? [],
+      const lesaoMap: Record<string,string> = {
+        sem_lesao:'nenhuma', epicondilite:'cotovelo',
+        ombro:'ombro', vibracoes_gerais:'vibracao',
       }
       const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          historico:    p.historico ?? 'recreativo',
+          tecnico:      p.tecnico   ?? 'basico',
+          estilo:       p.estilo    ?? 'flat_basico',
+          mobilidade:   p.mobilidade ?? 'mobilidade_moderada',
+          lesao:        lesaoMap[p.lesao ?? 'sem_lesao'] ?? 'nenhuma',
+          raquete_atual: (p.raquete_atual && !['nao_tenho','nao_sei'].includes(p.raquete_atual))
+            ? p.raquete_atual : undefined,
+          arquetipo_pro: p.arquetipo_pro ?? [],
+        }),
       })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error ?? 'Erro desconhecido')
-      }
+      if (!res.ok) throw new Error((await res.json()).error ?? 'Erro')
       setResultado(await res.json())
       setEstado('resultado')
     } catch (e: any) {
-      setErro(e.message ?? 'Erro ao buscar recomendação')
+      setErro(e.message)
       setEstado('quiz')
     }
   }
 
-  if (estado === 'loading') return <TelaLoading />
-  if (estado === 'resultado' && resultado) {
-    return <TelaResultado resultado={resultado} perfil={perfil} onReiniciar={() => {
-      setPerfil({}); setStepIndex(0); setEstado('quiz'); setResultado(null)
-    }} />
-  }
+  /* ── INTRO ─────────────────────────────────── */
+  if (estado === 'intro') return (
+    <div style={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      background: 'var(--court-dark)', position: 'relative', overflow: 'hidden',
+    }} className="grain">
+      {/* Fundo diagonal clay / grass */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        background: 'linear-gradient(135deg, #9B4520 0%, #C4622D 40%, #1A1A18 60%)',
+        opacity: 0.9,
+      }} />
+      {/* Linhas de quadra sutis */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 1,
+        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.04) 60px, rgba(255,255,255,0.04) 61px),
+                          repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.04) 60px, rgba(255,255,255,0.04) 61px)`,
+      }} />
 
-  const animClass = direction === 'forward' ? 'animate-slide-in-right' : 'animate-slide-in-left'
-  const stepNum = getStepNum(currentStep)
+      <div style={{
+        position: 'relative', zIndex: 2,
+        flex: 1, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        padding: '48px 24px', textAlign: 'center',
+      }} className="anim-fade-up">
+        <p style={{
+          fontFamily: 'var(--font-body)', fontWeight: 300, letterSpacing: '0.2em',
+          fontSize: '0.75rem', textTransform: 'uppercase',
+          color: 'var(--clay-dust)', marginBottom: '24px',
+        }}>
+          Encontre sua raquete ideal
+        </p>
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-creme)', display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 5.5rem)',
+          fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.02em',
+          color: 'var(--warm-white)', marginBottom: '8px',
+        }}>
+          Qual<br /><em style={{ color: 'var(--clay-light)' }}>raquete</em><br />é a sua?
+        </h1>
 
-      {/* Header premium com referências de torneios */}
-      <header style={{
-        borderBottom: '1px solid var(--color-creme-dark)',
-        padding: '12px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: 'var(--color-branco)',
+        <p style={{
+          marginTop: '28px', maxWidth: '320px',
+          fontSize: '0.9375rem', fontWeight: 300, lineHeight: 1.6,
+          color: 'rgba(247,243,238,0.65)',
+        }}>
+          7 perguntas. Recomendação personalizada pelo mesmo motor que analisa specs de torneios como Roland Garros e Wimbledon.
+        </p>
+
+        <button
+          onClick={() => setEstado('quiz')}
+          style={{
+            marginTop: '40px',
+            padding: '16px 48px',
+            background: 'var(--warm-white)',
+            color: 'var(--court-dark)',
+            border: 'none',
+            borderRadius: '2px',
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            transition: 'all 200ms ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--clay-dust)'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'var(--warm-white)'
+            e.currentTarget.style.transform = 'translateY(0)'
+          }}
+        >
+          Começar →
+        </button>
+
+        <p style={{
+          marginTop: '16px', fontSize: '0.75rem',
+          color: 'rgba(247,243,238,0.35)', fontWeight: 300,
+        }}>
+          Menos de 2 minutos
+        </p>
+      </div>
+
+      {/* Bottom label */}
+      <div style={{
+        position: 'relative', zIndex: 2,
+        padding: '16px 24px', textAlign: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '1.25rem' }}>🎾</span>
-          <span style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-cinza)' }}>
-            Raquete Ideal
-          </span>
-        </div>
-        {/* Torneios como badges sutis */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-          {TORNEIOS.map((t, i) => (
-            <span key={t} style={{
-              fontSize: '0.6875rem', fontWeight: 500,
-              padding: '3px 8px', borderRadius: 'var(--radius-full)',
-              background: i === 0 ? '#E8622A22' : i === 1 ? '#4A7C5922' : '#2C2C2C11',
-              color: i === 0 ? 'var(--color-laranja-dark)' : i === 1 ? 'var(--color-saibro-dark)' : 'var(--color-cinza-medium)',
-            }}>
-              {t}
-            </span>
-          ))}
-        </div>
-      </header>
+        {['Roland Garros','Wimbledon','US Open','Australian Open'].map(t => (
+          <span key={t} style={{
+            fontSize: '0.6875rem', fontWeight: 300,
+            color: 'rgba(247,243,238,0.3)', letterSpacing: '0.08em',
+          }}>{t}</span>
+        ))}
+      </div>
+    </div>
+  )
 
-      {/* Conteúdo do quiz */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 16px 24px' }}>
-        <div style={{ width: '100%', maxWidth: '480px' }}>
+  if (estado === 'loading')  return <TelaLoading />
+  if (estado === 'resultado' && resultado) return (
+    <TelaResultado resultado={resultado} perfil={perfil} onReiniciar={() => {
+      setPerfil({}); setStepIndex(0); setEstado('intro'); setResultado(null)
+    }} />
+  )
 
-          {/* Progresso */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-            {stepIndex > 0 ? (
-              <button onClick={voltar} style={{
-                background: 'none', border: 'none', color: 'var(--color-cinza-medium)',
-                fontSize: '0.875rem', cursor: 'pointer', padding: '4px 0',
-                display: 'flex', alignItems: 'center', gap: '4px',
-              }}>
-                ← Voltar
-              </button>
-            ) : <div />}
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-cinza-medium)' }}>
-              {stepNum} de {totalVisible}
-            </span>
-          </div>
+  const animClass = direction === 'forward' ? 'anim-slide-r' : 'anim-slide-l'
+  const stepNum   = getStepNum(currentStep)
+  const progPct   = (stepNum / totalVisible) * 100
 
-          {/* Barra de progresso */}
-          <div style={{ height: '3px', width: '100%', borderRadius: '99px', background: 'var(--color-creme-dark)', marginBottom: '20px' }}>
-            <div style={{
-              height: '100%', borderRadius: '99px',
-              background: 'linear-gradient(90deg, var(--color-saibro), var(--color-saibro-light))',
-              width: `${(stepNum / totalVisible) * 100}%`,
-              transition: 'width 400ms ease',
-            }} />
-          </div>
+  /* ── QUIZ ──────────────────────────────────── */
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--off-white)', display: 'flex', flexDirection: 'column' }}>
 
-          {/* Erro */}
+      {/* Barra de progresso topo — fina, clay */}
+      <div style={{ height: '3px', background: 'var(--cream)', flexShrink: 0 }}>
+        <div style={{
+          height: '100%',
+          width: `${progPct}%`,
+          background: 'var(--clay)',
+          transition: 'width 500ms var(--ease-out-expo)',
+        }} />
+      </div>
+
+      {/* Nav */}
+      <nav style={{
+        padding: '14px 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        borderBottom: '1px solid var(--cream)',
+        background: 'var(--warm-white)',
+        flexShrink: 0,
+      }}>
+        <button onClick={voltar} style={{
+          background: 'none', border: 'none',
+          fontFamily: 'var(--font-body)', fontSize: '0.8125rem',
+          color: stepIndex === 0 ? 'transparent' : '#999',
+          cursor: stepIndex === 0 ? 'default' : 'pointer',
+          letterSpacing: '0.04em',
+          transition: 'color 150ms',
+        }}>
+          ← voltar
+        </button>
+
+        <span style={{
+          fontFamily: 'var(--font-display)', fontStyle: 'italic',
+          fontSize: '1rem', color: 'var(--court-dark)', fontWeight: 700,
+        }}>
+          Raquete Ideal
+        </span>
+
+        <span style={{
+          fontFamily: 'var(--font-body)', fontSize: '0.75rem',
+          color: '#aaa', letterSpacing: '0.06em',
+        }}>
+          {stepNum}/{totalVisible}
+        </span>
+      </nav>
+
+      {/* Conteúdo */}
+      <div style={{
+        flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+        padding: '32px 20px 40px',
+      }}>
+        <div key={`${currentStep}-${stepIndex}`} className={animClass}
+             style={{ width: '100%', maxWidth: 'var(--max-quiz)' }}>
+
           {erro && (
             <div style={{
-              marginBottom: '12px', padding: '10px 14px', borderRadius: 'var(--radius-md)',
-              background: '#FEE2E2', color: '#DC2626', fontSize: '0.875rem',
+              marginBottom: '16px', padding: '12px 16px',
+              background: '#FEE2E2', color: '#B91C1C',
+              borderRadius: '4px', fontSize: '0.875rem',
             }}>
               {erro} — tente novamente.
             </div>
           )}
 
-          {/* Step atual */}
-          <div key={`${currentStep}-${stepIndex}`} className={animClass}>
-            {currentStep === 'historico'  && <StepHistorico  onNext={avancar} valorAtual={perfil.historico} />}
-            {currentStep === 'tecnico'    && <StepTecnico    onNext={avancar} valorAtual={perfil.tecnico} />}
-            {currentStep === 'estilo'     && <StepEstilo     onNext={avancar} historico={perfil.historico} valorAtual={perfil.estilo} />}
-            {currentStep === 'mobilidade' && <StepMobilidade onNext={avancar} valorAtual={perfil.mobilidade} />}
-            {currentStep === 'lesao'      && <StepLesao      onNext={avancar} valorAtual={perfil.lesao} />}
-            {currentStep === 'raquete'    && <StepRaquete    onNext={avancar} valorAtual={perfil.raquete_atual} />}
-            {currentStep === 'frequencia' && <StepFrequencia onNext={avancar} valorAtual={perfil.frequencia} />}
-          </div>
-
+          {currentStep === 'historico'  && <StepHistorico  onNext={avancar} valorAtual={perfil.historico} />}
+          {currentStep === 'tecnico'    && <StepTecnico    onNext={avancar} valorAtual={perfil.tecnico} />}
+          {currentStep === 'estilo'     && <StepEstilo     onNext={avancar} historico={perfil.historico} valorAtual={perfil.estilo} />}
+          {currentStep === 'mobilidade' && <StepMobilidade onNext={avancar} valorAtual={perfil.mobilidade} />}
+          {currentStep === 'lesao'      && <StepLesao      onNext={avancar} valorAtual={perfil.lesao} />}
+          {currentStep === 'raquete'    && <StepRaquete    onNext={avancar} valorAtual={perfil.raquete_atual} />}
+          {currentStep === 'frequencia' && <StepFrequencia onNext={avancar} valorAtual={perfil.frequencia} />}
         </div>
       </div>
-
-      {/* Footer com decoração de quadra */}
-      <footer style={{
-        borderTop: '1px solid var(--color-creme-dark)',
-        padding: '10px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px',
-        background: 'var(--color-branco)',
-      }}>
-        {[
-          { cor: '#C84B2F', label: 'Saibro' },
-          { cor: '#3E7D4E', label: 'Grama' },
-          { cor: '#3A6B9E', label: 'Piso duro' },
-        ].map(s => (
-          <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: s.cor }} />
-            <span style={{ fontSize: '0.6875rem', color: 'var(--color-cinza-light)', fontWeight: 500 }}>{s.label}</span>
-          </div>
-        ))}
-      </footer>
     </div>
   )
 }

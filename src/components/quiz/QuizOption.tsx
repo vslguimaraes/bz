@@ -1,7 +1,6 @@
 'use client'
 
 type Props = {
-  emoji: string
   label: string
   desc?: string
   selected?: boolean
@@ -9,38 +8,73 @@ type Props = {
   large?: boolean
 }
 
-export default function QuizOption({ emoji, label, desc, selected, onClick, large }: Props) {
+export default function QuizOption({ label, desc, selected, onClick, large }: Props) {
   return (
     <button
       onClick={onClick}
       style={{
-        background: selected ? 'var(--color-saibro)' : 'var(--color-branco)',
-        color: selected ? '#fff' : 'var(--color-cinza)',
-        border: `2px solid ${selected ? 'var(--color-saibro)' : 'var(--color-creme-dark)'}`,
-        borderRadius: 'var(--radius-lg)',
-        padding: large ? '20px 16px' : '14px 12px',
+        background: selected ? 'var(--court-dark)' : 'var(--warm-white)',
+        color: selected ? 'var(--warm-white)' : 'var(--court-dark)',
+        border: `1.5px solid ${selected ? 'var(--court-dark)' : 'var(--cream)'}`,
+        borderRadius: '4px',
+        padding: large ? '22px 20px' : '16px 14px',
         cursor: 'pointer',
-        boxShadow: selected ? '0 4px 16px rgba(74,124,89,0.25)' : 'var(--shadow-sm)',
-        transform: selected ? 'scale(1.02)' : 'scale(1)',
-        transition: 'all 150ms ease',
+        transition: 'all 180ms ease',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end',
+        gap: '4px',
         width: '100%',
-        minHeight: large ? '100px' : '80px',
-        textAlign: 'center',
+        minHeight: large ? '110px' : '88px',
+        textAlign: 'left',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      onMouseEnter={e => {
+        if (!selected) {
+          e.currentTarget.style.borderColor = 'var(--clay)'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+          e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.08)'
+        }
+      }}
+      onMouseLeave={e => {
+        if (!selected) {
+          e.currentTarget.style.borderColor = 'var(--cream)'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = 'none'
+        }
       }}
     >
-      <span style={{ fontSize: large ? '2.25rem' : '1.75rem', lineHeight: 1 }}>{emoji}</span>
-      <span style={{ fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.2 }}>{label}</span>
+      {/* Acento clay no canto superior quando selecionado */}
+      {selected && (
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0,
+          height: '3px', background: 'var(--clay)',
+        }} />
+      )}
+
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontWeight: 600,
+        fontSize: large ? '0.9375rem' : '0.875rem',
+        lineHeight: 1.2,
+        letterSpacing: '0.01em',
+      }}>
+        {label}
+      </span>
+
       {desc && (
         <span style={{
-          fontSize: '0.75rem', lineHeight: 1.3,
-          color: selected ? 'rgba(255,255,255,0.8)' : 'var(--color-cinza-medium)',
-          fontWeight: 400,
-        }}>{desc}</span>
+          fontFamily: 'var(--font-body)',
+          fontWeight: 300,
+          fontSize: '0.75rem',
+          lineHeight: 1.3,
+          color: selected ? 'rgba(247,243,238,0.6)' : '#999',
+          letterSpacing: '0.01em',
+        }}>
+          {desc}
+        </span>
       )}
     </button>
   )

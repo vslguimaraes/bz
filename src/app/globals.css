@@ -1,72 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --color-saibro: #4A7C59;
-  --color-saibro-dark: #3A6347;
-  --color-saibro-light: #6B9E7A;
-  --color-laranja: #E8622A;
-  --color-laranja-dark: #C94E1E;
-  --color-laranja-light: #F08055;
-  --color-creme: #F5F0E8;
-  --color-creme-dark: #EDE7D9;
-  --color-cinza: #2C2C2C;
-  --color-cinza-medium: #6B6B6B;
-  --color-cinza-light: #ADADAD;
-  --color-branco: #FFFFFF;
-  --font-body: 'Inter', sans-serif;
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-  --radius-full: 9999px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-  --shadow-focus: 0 0 0 3px rgba(74,124,89,0.30);
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-spring: 350ms cubic-bezier(0.34,1.56,0.64,1);
-  --max-width-quiz: 480px;
+  /* Clay — Roland Garros */
+  --clay:       #C4622D;
+  --clay-deep:  #9B4520;
+  --clay-light: #D4845A;
+  --clay-dust:  #E8C4A8;
+
+  /* Court neutrals */
+  --court-dark:  #1A1A18;
+  --court-mid:   #2E2E2B;
+  --off-white:   #F7F3EE;
+  --warm-white:  #FDFAF6;
+  --cream:       #EDE8DF;
+
+  /* Grass — Wimbledon */
+  --grass:       #3B6E45;
+  --grass-light: #5A9468;
+
+  /* Hard — US Open / AO */
+  --hard-blue:   #2B5EA7;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  --max-quiz: 520px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
   font-family: var(--font-body);
-  background: var(--color-creme);
-  color: var(--color-cinza);
+  background: var(--court-dark);
+  color: var(--off-white);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Quiz card slide animations */
-@keyframes slideInRight {
-  from { transform: translateX(32px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+/* ── Textura de saibro via CSS ─────────────────────────────── */
+.clay-bg {
+  background-color: var(--clay);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23C4622D'/%3E%3Ccircle cx='1' cy='1' r='0.4' fill='%23B5581F' opacity='0.6'/%3E%3Ccircle cx='3' cy='3' r='0.3' fill='%23D4744A' opacity='0.4'/%3E%3C/svg%3E");
 }
-@keyframes slideInLeft {
-  from { transform: translateX(-32px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+
+/* ── Grain overlay ─────────────────────────────────────────── */
+.grain::after {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px;
 }
-@keyframes slideOutLeft {
-  from { transform: translateX(0);    opacity: 1; }
-  to   { transform: translateX(-32px); opacity: 0; }
-}
-@keyframes slideOutRight {
-  from { transform: translateX(0);   opacity: 1; }
-  to   { transform: translateX(32px); opacity: 0; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+
+/* ── Animações ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulse-dot {
-  0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-  40%           { transform: scale(1); opacity: 1; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.animate-slide-in-right  { animation: slideInRight 300ms ease-out forwards; }
-.animate-slide-in-left   { animation: slideInLeft  300ms ease-out forwards; }
-.animate-slide-out-left  { animation: slideOutLeft 200ms ease-in  forwards; }
-.animate-slide-out-right { animation: slideOutRight 200ms ease-in forwards; }
-.animate-fade-in         { animation: fadeIn 400ms ease-out forwards; }
+.anim-fade-up    { animation: fadeUp    400ms var(--ease-out-expo) forwards; }
+.anim-fade-in    { animation: fadeIn    300ms ease forwards; }
+.anim-slide-r    { animation: slideRight 350ms var(--ease-out-expo) forwards; }
+.anim-slide-l    { animation: slideLeft  350ms var(--ease-out-expo) forwards; }
