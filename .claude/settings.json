@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+      "Bash(npm install *)",
+      "Bash(python3 scripts/extrair_specs_twu.py)",
+      "Bash(python3 scripts/preencher_catalogo.py)",
+      "Bash(python3 scripts/preencher_perfis.py)",
+      "Bash(python3 scripts/testar_recomendacoes.py *)",
+      "Bash(PYTHONIOENCODING=utf-8 python3 scripts/testar_recomendacoes.py *)",
+      "Bash(mkdir -p *)",
+      "WebFetch(domain:twu.tennis-warehouse.com)"
+    ]
+  }
+}
