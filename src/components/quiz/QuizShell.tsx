@@ -213,9 +213,31 @@ export default function QuizShell() {
   const stepNum   = getStepNum(currentStep)
   const progPct   = (stepNum / totalVisible) * 100
 
+  // Background por step — sempre claro com overlay branco
+  const STEP_BG: Record<string, string> = {
+    historico:  'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1400&q=80',
+    tecnico:    'https://images.unsplash.com/photo-1542144841-bf99-4a6f-a009-c95a3a9c6e3e?auto=format&fit=crop&w=1400&q=80',
+    estilo:     'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80',
+    mobilidade: 'https://images.unsplash.com/photo-1528629297340-d1d466945dc5?auto=format&fit=crop&w=1400&q=80',
+    lesao:      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=1400&q=80',
+    raquete:    'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1400&q=80',
+    frequencia: 'https://images.unsplash.com/photo-1560012057-4372e14c5085?auto=format&fit=crop&w=1400&q=80',
+  }
+  const bgUrl = STEP_BG[currentStep]
+
   /* ── QUIZ ──────────────────────────────────── */
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--off-white)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex', flexDirection: 'column',
+      position: 'relative',
+      backgroundImage: bgUrl ? `linear-gradient(rgba(247,243,238,0.91), rgba(247,243,238,0.91)), url(${bgUrl})` : undefined,
+      backgroundColor: 'var(--off-white)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      transition: 'background-image 400ms ease',
+    }}>
 
       {/* Nav */}
       <nav style={{
