@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 type Opcao = {
   posicao: number
@@ -241,6 +242,7 @@ function CardRaquete({
 
 export default function TelaResultado({ resultado, onReiniciar, sessaoId }: Props) {
   const [feedback, setFeedback] = useState<1 | -1 | null>(null)
+  const isMobile = useIsMobile()
 
   function handleFeedback(rating: 1 | -1) {
     if (feedback !== null) return
@@ -307,10 +309,10 @@ export default function TelaResultado({ resultado, onReiniciar, sessaoId }: Prop
 
       {/* Cards */}
       <div style={{
-        padding: '14px 20px 32px',
+        padding: isMobile ? '12px 14px 24px' : '14px 20px 32px',
         maxWidth: '960px', margin: '0 auto',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: isMobile ? 'column' : 'row',
         gap: '12px',
         alignItems: 'stretch',
       }}>

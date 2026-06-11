@@ -1,6 +1,7 @@
 'use client'
 import { ReactNode } from 'react'
 import QuizOption from './QuizOption'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 type Opcao = {
   valor: string
@@ -20,9 +21,20 @@ type Props = {
 }
 
 export default function QuizGrid({ opcoes, selecionado, onEscolher, escapeLabel, onEscape, cols = 2 }: Props) {
+  const isMobile = useIsMobile()
+  // Em mobile, 4+ opções ficam em 1 coluna; 3 opções ficam em 1 coluna também (cols=3 → 1)
+  // 2 opções mantém 2 colunas (cabe bem em mobile)
+  const effectiveCols = isMobile
+    ? (opcoes.length === 2 ? 2 : 1)
+    : cols
+
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: '8px' }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${effectiveCols}, 1fr)`,
+        gap: isMobile ? '8px' : '8px',
+      }}>
         {opcoes.map(o => (
           <QuizOption
             key={o.valor}
