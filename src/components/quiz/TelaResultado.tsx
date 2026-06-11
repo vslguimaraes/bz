@@ -17,23 +17,37 @@ type Resultado = {
 
 type Props = { resultado: Resultado; onReiniciar: () => void }
 
-// Extrai só a tensão da string de corda (ex: "46-48 lbs" de um texto longo)
-function extrairTensao(corda: string): string {
-  const match = corda.match(/\d{2}[-–]\d{2}\s*lbs/i) ?? corda.match(/\d{2}\s*lbs/i)
-  return match ? match[0] : corda.split('—')[0].split('.')[0].trim().slice(0, 20)
+// Extrai nome da corda (antes do primeiro "—" ou "·")
+function extrairNomeCorda(corda: string): string {
+  const semHybrid = corda.replace(/^hybrid:\s*/i, '')
+  const partes = semHybrid.split(/\s*[—–-]{1,2}\s*/)
+  return partes[0].trim().slice(0, 30)
 }
 
-// Extrai só o tamanho de grip (ex: "L3" ou "L2")
+// Extrai tensão
+function extrairTensao(corda: string): string {
+  const match = corda.match(/\d{2}[-–\/]\d{2}\s*lbs/i) ?? corda.match(/\d{2}\s*lbs/i)
+  return match ? match[0] : ''
+}
+
+// Extrai grip size
 function extrairGrip(grip: string): string {
   const match = grip.match(/L[1-5]/i)
-  return match ? match[0].toUpperCase() : grip.split('.')[0].trim().slice(0, 12)
+  return match ? match[0].toUpperCase() : grip.split('.')[0].trim().slice(0, 10)
 }
 
-const BADGE_LABEL = ['#1 para você', 'Alternativa', 'Alternativa']
-const BADGE_COLOR = ['var(--clay)', 'var(--grass)', 'var(--hard-blue)']
+const BADGE = [
+  { label: '#1 para você', bg: '#C4622D' },
+  { label: 'Alternativa',  bg: '#3B6E45' },
+  { label: 'Alternativa',  bg: '#2B5EA7' },
+]
 
 function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
   const isPrimary = index === 0
+  const badge = BADGE[index] ?? { label: 'Opção', bg: '#888' }
+  const nomeCorda = extrairNomeCorda(opcao.corda_sugerida)
+  const tensao   = extrairTensao(opcao.corda_sugerida)
+  const grip     = extrairGrip(opcao.grip_sugerido)
 
   return (
     <div style={{
@@ -45,67 +59,46 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
       display: 'flex',
       flexDirection: 'column',
       boxShadow: isPrimary
-        ? '0 8px 40px rgba(196,98,45,0.18)'
-        : '0 2px 16px rgba(0,0,0,0.08)',
-      border: isPrimary ? '2px solid var(--clay)' : '1.5px solid #EBEBEB',
-      transition: 'transform 200ms, box-shadow 200ms',
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-4px)'
-        e.currentTarget.style.boxShadow = isPrimary
-          ? '0 16px 48px rgba(196,98,45,0.25)'
-          : '0 12px 32px rgba(0,0,0,0.13)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = isPrimary
-          ? '0 8px 40px rgba(196,98,45,0.18)'
-          : '0 2px 16px rgba(0,0,0,0.08)'
-      }}
-    >
-      {/* Imagem / placeholder da raquete */}
+        ? '0 6px 32px rgba(196,98,45,0.16)'
+        : '0 2px 12px rgba(0,0,0,0.07)',
+      border: isPrimary ? '2px solid #C4622D' : '1.5px solid #E8E4DF',
+    }}>
+
+      {/* Zona imagem */}
       <div style={{
-        background: 'linear-gradient(135deg, #F5F0EB 0%, #EDE8E3 100%)',
-        height: isPrimary ? '180px' : '150px',
+        background: 'linear-gradient(135deg, #F0EBE5 0%, #E8E3DD 100%)',
+        height: '120px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
         flexShrink: 0,
       }}>
-        {/* Badge de posição */}
         <div style={{
-          position: 'absolute', top: '12px', left: '12px',
-          background: BADGE_COLOR[index],
+          position: 'absolute', top: '10px', left: '10px',
+          background: badge.bg,
           color: '#FFFFFF',
-          fontSize: '0.625rem',
+          fontSize: '0.5625rem',
           fontFamily: 'var(--font-body)',
           fontWeight: 700,
-          letterSpacing: '0.1em',
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
           padding: '4px 10px',
           borderRadius: '20px',
         }}>
-          {BADGE_LABEL[index]}
+          {badge.label}
         </div>
-
-        {/* Placeholder — troca por <img> quando tiver foto */}
-        <div style={{ textAlign: 'center' }}>
-          <span style={{ fontSize: '52px', opacity: 0.35 }}>🎾</span>
-          <p style={{
-            fontSize: '0.625rem', color: '#bbb', marginTop: '6px',
-            fontFamily: 'var(--font-body)', letterSpacing: '0.08em',
-          }}>foto em breve</p>
-        </div>
+        <span style={{ fontSize: '44px', opacity: 0.28 }}>🎾</span>
       </div>
 
       {/* Conteúdo */}
-      <div style={{ padding: '18px 18px 20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <div style={{ padding: '14px 16px 16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+
         {/* Marca */}
         <p style={{
-          fontFamily: 'var(--font-body)', fontWeight: 300,
-          fontSize: '0.6875rem', letterSpacing: '0.14em',
-          textTransform: 'uppercase', color: '#AAA',
+          fontFamily: 'var(--font-body)', fontWeight: 400,
+          fontSize: '0.625rem', letterSpacing: '0.16em',
+          textTransform: 'uppercase', color: '#999',
           marginBottom: '2px',
         }}>
           {opcao.raquete.marca}
@@ -114,24 +107,23 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
         {/* Modelo */}
         <h3 style={{
           fontFamily: 'var(--font-display)',
-          fontSize: isPrimary ? '1.375rem' : '1.125rem',
+          fontSize: isPrimary ? '1.25rem' : '1.0625rem',
           fontWeight: 800,
-          color: 'var(--court-dark)',
+          color: '#1A1A18',
           lineHeight: 1.1,
-          marginBottom: '12px',
+          marginBottom: '10px',
         }}>
           {opcao.raquete.modelo}
         </h3>
 
-        {/* Justificativa — 3 linhas max */}
+        {/* Justificativa — 3 linhas fixas */}
         <p style={{
           fontFamily: 'var(--font-body)',
           fontSize: '0.8125rem',
           fontWeight: 400,
-          lineHeight: 1.6,
-          color: '#666',
-          marginBottom: '16px',
-          flex: 1,
+          lineHeight: 1.55,
+          color: '#555',
+          marginBottom: '12px',
           display: '-webkit-box',
           WebkitLineClamp: 3,
           WebkitBoxOrient: 'vertical',
@@ -140,25 +132,31 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
           {opcao.justificativa}
         </p>
 
-        {/* Specs — só tensão e grip */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-          <div style={{
-            flex: 1, background: '#F7F3EE', borderRadius: '6px',
-            padding: '8px 10px',
-          }}>
-            <p style={{ fontSize: '0.5625rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#CCC', marginBottom: '2px' }}>Tensão</p>
-            <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--court-dark)' }}>
-              {extrairTensao(opcao.corda_sugerida)}
-            </p>
+        {/* Spec: corda + tensão + grip numa linha */}
+        <div style={{
+          background: '#F5F1ED',
+          borderRadius: '8px',
+          padding: '10px 12px',
+          marginBottom: '14px',
+          display: 'grid',
+          gridTemplateColumns: '1fr auto auto',
+          gap: '8px',
+          alignItems: 'start',
+        }}>
+          {/* Corda */}
+          <div>
+            <p style={{ fontSize: '0.5rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Corda</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#333', lineHeight: 1.2 }}>{nomeCorda}</p>
           </div>
-          <div style={{
-            flex: 1, background: '#F7F3EE', borderRadius: '6px',
-            padding: '8px 10px',
-          }}>
-            <p style={{ fontSize: '0.5625rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#CCC', marginBottom: '2px' }}>Grip</p>
-            <p style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--court-dark)' }}>
-              {extrairGrip(opcao.grip_sugerido)}
-            </p>
+          {/* Tensão */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.5rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Tensão</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#333' }}>{tensao}</p>
+          </div>
+          {/* Grip */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.5rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Grip</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#333' }}>{grip}</p>
           </div>
         </div>
 
@@ -170,28 +168,25 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
             rel="noopener noreferrer"
             style={{
               display: 'block',
-              padding: isPrimary ? '14px' : '12px',
-              background: isPrimary ? 'var(--clay)' : 'var(--court-dark)',
+              padding: isPrimary ? '13px' : '11px',
+              background: isPrimary ? '#C4622D' : '#1A1A18',
               color: '#FFFFFF',
               borderRadius: '6px',
               textAlign: 'center',
               fontFamily: 'var(--font-body)',
               fontWeight: 700,
-              fontSize: isPrimary ? '0.9375rem' : '0.8125rem',
-              letterSpacing: '0.06em',
+              fontSize: '0.8125rem',
+              letterSpacing: '0.07em',
               textDecoration: 'none',
               textTransform: 'uppercase',
-              transition: 'opacity 150ms',
             }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             Ver no Tennis Warehouse →
           </a>
         ) : (
           <div style={{
-            padding: '12px', background: '#F0EDEA', borderRadius: '6px',
-            textAlign: 'center', fontSize: '0.75rem', color: '#BBB',
+            padding: '11px', background: '#F0EDEA', borderRadius: '6px',
+            textAlign: 'center', fontSize: '0.75rem', color: '#AAA',
             fontFamily: 'var(--font-body)',
           }}>
             Busque na sua loja local
@@ -204,20 +199,19 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
 
 export default function TelaResultado({ resultado, onReiniciar }: Props) {
   return (
-    <div style={{ minHeight: '100vh', background: '#F2EDE8' }}>
+    <div style={{ minHeight: '100vh', background: '#EDE9E4' }}>
 
-      {/* Barra clay cheia */}
-      <div style={{ height: '3px', background: 'var(--clay)' }} />
+      <div style={{ height: '3px', background: '#C4622D' }} />
 
       {/* Nav */}
       <nav style={{
         padding: '12px 24px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: '#FFFFFF', borderBottom: '1px solid #EBEBEB',
+        background: '#FFFFFF', borderBottom: '1px solid #E8E4DF',
       }}>
         <span style={{
-          fontFamily: 'var(--font-display)', fontStyle: 'italic',
-          fontSize: '0.9375rem', color: 'var(--court-dark)', fontWeight: 700,
+          fontFamily: 'var(--font-display)',
+          fontSize: '0.9375rem', color: '#1A1A18', fontWeight: 700,
         }}>
           Raquete Ideal
         </span>
@@ -230,24 +224,29 @@ export default function TelaResultado({ resultado, onReiniciar }: Props) {
         </button>
       </nav>
 
-      {/* Subtítulo perfil */}
-      <div style={{ padding: '20px 24px 0', maxWidth: '960px', margin: '0 auto' }}>
+      {/* Perfil — positivo, sem itálico */}
+      <div style={{ padding: '16px 24px 4px', maxWidth: '960px', margin: '0 auto' }}>
         <p style={{
-          fontFamily: 'var(--font-display)', fontStyle: 'italic',
-          fontSize: '1rem', color: 'var(--court-mid)',
-          fontWeight: 400, lineHeight: 1.4,
+          fontFamily: 'var(--font-body)',
+          fontSize: '0.9375rem',
+          fontWeight: 500,
+          color: '#555',
+          lineHeight: 1.5,
         }}>
-          "{resultado.resumo_perfil}"
+          Selecionamos as melhores opções para o seu perfil —{' '}
+          <span style={{ color: '#C4622D', fontWeight: 600 }}>
+            {resultado.resumo_perfil}
+          </span>
         </p>
       </div>
 
       {/* Cards */}
       <div style={{
-        padding: '20px 20px 40px',
+        padding: '14px 20px 32px',
         maxWidth: '960px', margin: '0 auto',
         display: 'flex',
         flexDirection: 'row',
-        gap: '14px',
+        gap: '12px',
         alignItems: 'stretch',
       }}>
         {resultado.opcoes.map((op, i) => (
@@ -257,9 +256,9 @@ export default function TelaResultado({ resultado, onReiniciar }: Props) {
 
       {resultado.debug && (
         <p style={{
-          textAlign: 'center', paddingBottom: '24px',
+          textAlign: 'center', paddingBottom: '20px',
           fontFamily: 'var(--font-body)', fontWeight: 300,
-          fontSize: '0.6875rem', color: '#CCC', letterSpacing: '0.04em',
+          fontSize: '0.6875rem', color: '#BBB', letterSpacing: '0.04em',
         }}>
           {resultado.debug.apos_eliminacao}/{resultado.debug.total_catalogo} raquetes analisadas
         </p>
