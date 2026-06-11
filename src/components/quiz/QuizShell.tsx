@@ -120,7 +120,7 @@ export default function QuizShell() {
         <p style={{
           fontFamily: 'var(--font-body)', fontWeight: 400, letterSpacing: '0.22em',
           fontSize: '0.75rem', textTransform: 'uppercase',
-          color: 'var(--clay-light)', marginBottom: '24px',
+          color: 'rgba(255,255,255,0.55)', marginBottom: '24px',
           textShadow: '0 1px 8px rgba(0,0,0,0.6)',
         }}>
           Encontre sua raquete ideal
@@ -132,7 +132,7 @@ export default function QuizShell() {
           color: '#FFFFFF', marginBottom: '8px',
           textShadow: '0 2px 16px rgba(0,0,0,0.5)',
         }}>
-          Qual<br /><em style={{ color: 'var(--clay-light)' }}>raquete</em><br />é a sua?
+          Qual<br /><em style={{ color: 'rgba(255,255,255,0.75)' }}>raquete</em><br />é a sua?
         </h1>
 
         <p style={{
