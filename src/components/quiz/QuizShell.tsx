@@ -108,7 +108,7 @@ export default function QuizShell() {
       {/* Overlay escuro para legibilidade */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1,
-        background: 'linear-gradient(180deg, rgba(26,26,24,0.55) 0%, rgba(26,26,24,0.75) 60%, rgba(26,26,24,0.95) 100%)',
+        background: 'linear-gradient(180deg, rgba(26,26,24,0.68) 0%, rgba(26,26,24,0.82) 50%, rgba(26,26,24,0.97) 100%)',
       }} />
 
       <div style={{
@@ -118,9 +118,10 @@ export default function QuizShell() {
         padding: '48px 24px', textAlign: 'center',
       }} className="anim-fade-up">
         <p style={{
-          fontFamily: 'var(--font-body)', fontWeight: 300, letterSpacing: '0.2em',
+          fontFamily: 'var(--font-body)', fontWeight: 400, letterSpacing: '0.22em',
           fontSize: '0.75rem', textTransform: 'uppercase',
-          color: 'var(--clay-dust)', marginBottom: '24px',
+          color: 'var(--clay-light)', marginBottom: '24px',
+          textShadow: '0 1px 8px rgba(0,0,0,0.6)',
         }}>
           Encontre sua raquete ideal
         </p>
@@ -128,15 +129,17 @@ export default function QuizShell() {
         <h1 style={{
           fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 5.5rem)',
           fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.02em',
-          color: 'var(--warm-white)', marginBottom: '8px',
+          color: '#FFFFFF', marginBottom: '8px',
+          textShadow: '0 2px 16px rgba(0,0,0,0.5)',
         }}>
           Qual<br /><em style={{ color: 'var(--clay-light)' }}>raquete</em><br />é a sua?
         </h1>
 
         <p style={{
           marginTop: '28px', maxWidth: '320px',
-          fontSize: '0.9375rem', fontWeight: 300, lineHeight: 1.6,
-          color: 'rgba(247,243,238,0.65)',
+          fontSize: '0.9375rem', fontWeight: 400, lineHeight: 1.6,
+          color: 'rgba(255,255,255,0.85)',
+          textShadow: '0 1px 8px rgba(0,0,0,0.5)',
         }}>
           7 perguntas. Recomendação personalizada pelo mesmo motor que analisa specs de torneios como Roland Garros e Wimbledon.
         </p>
@@ -177,7 +180,7 @@ export default function QuizShell() {
 
         <p style={{
           marginTop: '16px', fontSize: '0.75rem',
-          color: 'rgba(247,243,238,0.35)', fontWeight: 300,
+          color: 'rgba(255,255,255,0.55)', fontWeight: 300,
         }}>
           Menos de 2 minutos
         </p>
