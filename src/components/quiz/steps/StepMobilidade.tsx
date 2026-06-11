@@ -2,12 +2,12 @@
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
-import { IluAltaMobilidade, IluModerada, IluReduzida } from '../Illustrations'
+import Emoji from '../Emoji'
 
 const OPCOES = [
-  { valor: 'alta_mobilidade',     label: 'Me movo bem',     desc: 'Deslizo, corro de ponta a ponta', illustration: <IluAltaMobilidade /> },
-  { valor: 'mobilidade_moderada', label: 'Razoável',        desc: 'Cubro sem explosão',              illustration: <IluModerada /> },
-  { valor: 'mobilidade_reduzida', label: 'Prefiro posição', desc: 'Centro da quadra, antecipação',   illustration: <IluReduzida /> },
+  { valor: 'alta_mobilidade',     label: 'Me movo bem',     desc: 'Deslizo, corro de ponta a ponta', illustration: <Emoji e="🏃" /> },
+  { valor: 'mobilidade_moderada', label: 'Razoável',        desc: 'Cubro sem explosão',              illustration: <Emoji e="🚶" /> },
+  { valor: 'mobilidade_reduzida', label: 'Prefiro posição', desc: 'Centro da quadra, antecipação',   illustration: <Emoji e="🧘" /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }

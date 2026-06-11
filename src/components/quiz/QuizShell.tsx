@@ -217,16 +217,6 @@ export default function QuizShell() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--off-white)', display: 'flex', flexDirection: 'column' }}>
 
-      {/* Barra de progresso topo — fina, clay */}
-      <div style={{ height: '3px', background: 'var(--cream)', flexShrink: 0 }}>
-        <div style={{
-          height: '100%',
-          width: `${progPct}%`,
-          background: 'var(--clay)',
-          transition: 'width 500ms var(--ease-out-expo)',
-        }} />
-      </div>
-
       {/* Nav */}
       <nav style={{
         padding: '14px 24px',
@@ -253,13 +243,41 @@ export default function QuizShell() {
           Raquete Ideal
         </span>
 
-        <span style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.75rem',
-          color: '#aaa', letterSpacing: '0.06em',
-        }}>
-          {stepNum}/{totalVisible}
-        </span>
+        {/* espaçador para centralizar o título */}
+        <span style={{ width: '52px' }} />
       </nav>
+
+      {/* Barra de progresso abaixo do nav */}
+      <div style={{
+        background: 'var(--warm-white)',
+        padding: '10px 24px 14px',
+        borderBottom: '1px solid var(--cream)',
+        flexShrink: 0,
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+        }}>
+          <div style={{
+            flex: 1, height: '4px', background: 'var(--cream)',
+            borderRadius: '2px', overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${progPct}%`,
+              background: 'var(--clay)',
+              borderRadius: '2px',
+              transition: 'width 500ms var(--ease-out-expo)',
+            }} />
+          </div>
+          <span style={{
+            fontFamily: 'var(--font-body)', fontSize: '0.6875rem',
+            color: '#aaa', letterSpacing: '0.08em', flexShrink: 0,
+            minWidth: '28px', textAlign: 'right',
+          }}>
+            {stepNum}/{totalVisible}
+          </span>
+        </div>
+      </div>
 
       {/* Conteúdo */}
       <div style={{

@@ -2,13 +2,13 @@
 import { useState } from 'react'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
-import { IluPoucos, IluSemanal, IluFrequente, IluIntenso } from '../Illustrations'
+import Emoji from '../Emoji'
 
 const OPCOES = [
-  { valor: 'poucos_meses', label: '1x por mês',     desc: 'Jogo esporadicamente',        illustration: <IluPoucos /> },
-  { valor: 'semanal',      label: '2–5x por mês',   desc: 'Jogo com regularidade',       illustration: <IluSemanal /> },
-  { valor: 'frequente',    label: '5–10x por mês',  desc: 'Faz parte da rotina',         illustration: <IluFrequente /> },
-  { valor: 'intenso',      label: 'Quase todo dia', desc: 'Treino ou competição diária', illustration: <IluIntenso /> },
+  { valor: 'poucos_meses', label: '1x por mês',     desc: 'Jogo esporadicamente',        illustration: <Emoji e="🗓️" /> },
+  { valor: 'semanal',      label: '2–5x por mês',   desc: 'Jogo com regularidade',       illustration: <Emoji e="📅" /> },
+  { valor: 'frequente',    label: '5–10x por mês',  desc: 'Faz parte da rotina',         illustration: <Emoji e="⚡" /> },
+  { valor: 'intenso',      label: 'Quase todo dia', desc: 'Treino ou competição diária', illustration: <Emoji e="🔥" /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }

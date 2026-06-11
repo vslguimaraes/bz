@@ -3,20 +3,20 @@ import { useState } from 'react'
 import QuizOption from '../QuizOption'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
-import { IluTopspin, IluFlat, IluAllCourt, IluDefensivo, IluNetRusher, IluDescoberto } from '../Illustrations'
+import Emoji from '../Emoji'
 
 const OPCOES_A = [
-  { valor: 'topspin_fundo', label: 'Topspin do fundo',  desc: 'Bola alta e pesada',      illustration: <IluTopspin /> },
-  { valor: 'flat_basico',   label: 'Bola chapada',      desc: 'Direto ao ponto',          illustration: <IluFlat /> },
-  { valor: 'descobrindo',   label: 'Ainda descobrindo', desc: 'Experimento estilos',      illustration: <IluDescoberto /> },
+  { valor: 'topspin_fundo', label: 'Topspin do fundo',  desc: 'Bola alta e pesada',      illustration: <Emoji e="🌀" /> },
+  { valor: 'flat_basico',   label: 'Bola chapada',      desc: 'Direto ao ponto',          illustration: <Emoji e="➡️" /> },
+  { valor: 'descobrindo',   label: 'Ainda descobrindo', desc: 'Experimento estilos',      illustration: <Emoji e="🔍" /> },
 ]
 
 const OPCOES_B = [
-  { valor: 'topspin_pesado',       label: 'Topspin pesado',     desc: 'Muita rotação, cria ângulos',  illustration: <IluTopspin /> },
-  { valor: 'serve_flat_agressivo', label: 'Saque agressivo',    desc: 'Pontos rápidos, bola plana',   illustration: <IluFlat /> },
-  { valor: 'all_court',            label: 'All court',          desc: 'Versátil em qualquer situação',illustration: <IluAllCourt /> },
-  { valor: 'defensivo_contador',   label: 'Defesa e paciência', desc: 'Consistência, espero o erro',  illustration: <IluDefensivo /> },
-  { valor: 'net_rusher',           label: 'Ataque na rede',     desc: 'Voleios e smashes',            illustration: <IluNetRusher /> },
+  { valor: 'topspin_pesado',       label: 'Topspin pesado',     desc: 'Muita rotação, cria ângulos',   illustration: <Emoji e="🌀" /> },
+  { valor: 'serve_flat_agressivo', label: 'Saque agressivo',    desc: 'Pontos rápidos, bola plana',    illustration: <Emoji e="💥" /> },
+  { valor: 'all_court',            label: 'All court',          desc: 'Versátil em qualquer situação', illustration: <Emoji e="🎾" /> },
+  { valor: 'defensivo_contador',   label: 'Defesa e paciência', desc: 'Consistência, espero o erro',   illustration: <Emoji e="🛡️" /> },
+  { valor: 'net_rusher',           label: 'Ataque na rede',     desc: 'Voleios e smashes',             illustration: <Emoji e="🏃" /> },
 ]
 
 type Props = { onNext: (v: any) => void; historico?: string; valorAtual?: string }

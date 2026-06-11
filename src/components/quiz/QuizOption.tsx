@@ -86,10 +86,10 @@ export default function QuizOption({ label, desc, illustration, selected, onClic
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
           fontStyle: 'normal',
-          fontSize: large ? '1rem' : '0.875rem',
+          fontSize: '1.125rem',
           lineHeight: 1.2,
           letterSpacing: '-0.01em',
-          marginBottom: desc ? '3px' : 0,
+          marginBottom: desc ? '4px' : 0,
           color: selected ? '#FFFFFF' : 'var(--court-dark)',
         }}>
           {label}
@@ -98,10 +98,10 @@ export default function QuizOption({ label, desc, illustration, selected, onClic
           <span style={{
             display: 'block',
             fontFamily: 'var(--font-body)',
-            fontWeight: 300,
-            fontSize: '0.6875rem',
+            fontWeight: 400,
+            fontSize: '0.875rem',
             lineHeight: 1.4,
-            color: selected ? 'rgba(247,243,238,0.6)' : '#999',
+            color: selected ? 'rgba(247,243,238,0.65)' : '#777',
           }}>
             {desc}
           </span>

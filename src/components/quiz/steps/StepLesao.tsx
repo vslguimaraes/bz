@@ -3,11 +3,11 @@ import { useState } from 'react'
 import QuizOption from '../QuizOption'
 import QuizGrid from '../QuizGrid'
 import StepHeader from '../StepHeader'
-import { IluSemLesao, IluCotovelo, IluVibracao } from '../Illustrations'
+import Emoji from '../Emoji'
 
 const MENORES = [
-  { valor: 'epicondilite',     label: 'Cotovelo de tenista', desc: 'Dor lateral ao jogar',             illustration: <IluCotovelo /> },
-  { valor: 'vibracoes_gerais', label: 'Vibração no braço',   desc: 'Formigamento, impacto excessivo',  illustration: <IluVibracao /> },
+  { valor: 'epicondilite',     label: 'Cotovelo de tenista', desc: 'Dor lateral ao jogar',             illustration: <Emoji e="💪" /> },
+  { valor: 'vibracoes_gerais', label: 'Vibração no braço',   desc: 'Formigamento, impacto excessivo',  illustration: <Emoji e="📳" /> },
 ]
 
 type Props = { onNext: (v: any) => void; valorAtual?: string }
@@ -19,7 +19,7 @@ export default function StepLesao({ onNext, valorAtual }: Props) {
     <div>
       <StepHeader question="Você tem alguma lesão no braço?" hint="Crítico — uma raquete errada pode agravar lesões." />
       <div style={{ marginBottom: '8px' }}>
-        <QuizOption label="Estou bem, sem lesões" illustration={<IluSemLesao size={52} />} large
+        <QuizOption label="Estou bem, sem lesões" illustration={<Emoji e="✅" size={48} />} large
           selected={s === 'sem_lesao'} onClick={() => escolher('sem_lesao')} />
       </div>
       <QuizGrid opcoes={MENORES} selecionado={s} onEscolher={escolher}
