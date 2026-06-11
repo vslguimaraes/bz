@@ -1,5 +1,8 @@
 'use client'
 
+import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
 type Opcao = {
   posicao: number
   label: string
@@ -15,7 +18,7 @@ type Resultado = {
   debug?: { total_catalogo: number; apos_eliminacao: number }
 }
 
-type Props = { resultado: Resultado; onReiniciar: () => void }
+type Props = { resultado: Resultado; onReiniciar: () => void; sessaoId?: string }
 
 // Extrai nome da corda (antes do primeiro "—" ou "·")
 function extrairNomeCorda(corda: string): string {
@@ -36,18 +39,56 @@ function extrairGrip(grip: string): string {
   return match ? match[0].toUpperCase() : grip.split('.')[0].trim().slice(0, 10)
 }
 
+// UTM helper
+function addUtm(url: string, raqueteId: string): string {
+  if (!url) return url
+  const u = new URL(url)
+  u.searchParams.set('utm_source', 'raquete-ideal')
+  u.searchParams.set('utm_medium', 'recommendation')
+  u.searchParams.set('utm_campaign', 'quiz')
+  u.searchParams.set('utm_content', raqueteId)
+  return u.toString()
+}
+
 const BADGE = [
   { label: '#1 para você', bg: '#C4622D' },
   { label: 'Alternativa',  bg: '#3B6E45' },
   { label: 'Alternativa',  bg: '#2B5EA7' },
 ]
 
-function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
+function CardRaquete({
+  opcao,
+  index,
+  sessaoId,
+}: {
+  opcao: Opcao
+  index: number
+  sessaoId?: string
+}) {
   const isPrimary = index === 0
   const badge = BADGE[index] ?? { label: 'Opção', bg: '#888' }
   const nomeCorda = extrairNomeCorda(opcao.corda_sugerida)
   const tensao   = extrairTensao(opcao.corda_sugerida)
   const grip     = extrairGrip(opcao.grip_sugerido)
+  const raqueteId = opcao.raquete.modelo.toLowerCase().replace(/\s+/g, '-')
+  const href = addUtm(opcao.raquete.link_tw, raqueteId)
+
+  function handleAffiliateClick() {
+    void (async () => {
+      try {
+        await supabase.from('eventos').insert({
+          tipo: 'affiliate_click',
+          sessao_id: sessaoId ?? null,
+          payload: {
+            marca: opcao.raquete.marca,
+            modelo: opcao.raquete.modelo,
+            posicao: index + 1,
+            loja: 'tennis_warehouse',
+          },
+        })
+      } catch { /* fire-and-forget */ }
+    })()
+  }
 
   return (
     <div style={{
@@ -163,9 +204,10 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
         {/* CTA */}
         {opcao.raquete.link_tw ? (
           <a
-            href={opcao.raquete.link_tw}
+            href={href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleAffiliateClick}
             style={{
               display: 'block',
               padding: isPrimary ? '13px' : '11px',
@@ -197,7 +239,30 @@ function CardRaquete({ opcao, index }: { opcao: Opcao; index: number }) {
   )
 }
 
-export default function TelaResultado({ resultado, onReiniciar }: Props) {
+export default function TelaResultado({ resultado, onReiniciar, sessaoId }: Props) {
+  const [feedback, setFeedback] = useState<1 | -1 | null>(null)
+
+  function handleFeedback(rating: 1 | -1) {
+    if (feedback !== null) return
+    setFeedback(rating)
+    void (async () => {
+      try {
+        await supabase.from('eventos').insert({
+          tipo: 'feedback',
+          sessao_id: sessaoId ?? null,
+          payload: {
+            rating,
+            opcoes_apresentadas: resultado.opcoes.map(op => ({
+              marca: op.raquete.marca,
+              modelo: op.raquete.modelo,
+              posicao: op.posicao,
+            })),
+          },
+        })
+      } catch { /* fire-and-forget */ }
+    })()
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#EDE9E4' }}>
 
@@ -250,8 +315,100 @@ export default function TelaResultado({ resultado, onReiniciar }: Props) {
         alignItems: 'stretch',
       }}>
         {resultado.opcoes.map((op, i) => (
-          <CardRaquete key={op.posicao} opcao={op} index={i} />
+          <CardRaquete key={op.posicao} opcao={op} index={i} sessaoId={sessaoId} />
         ))}
+      </div>
+
+      {/* Feedback */}
+      <div style={{
+        maxWidth: '960px', margin: '0 auto',
+        padding: '0 20px 40px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+      }}>
+        {feedback === null ? (
+          <>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.8125rem',
+              color: '#888',
+            }}>
+              Essa recomendação foi útil?
+            </span>
+            <button
+              onClick={() => handleFeedback(1)}
+              style={{
+                background: 'none',
+                border: '1.5px solid #E8E4DF',
+                borderRadius: '6px',
+                padding: '6px 14px',
+                fontSize: '1.125rem',
+                cursor: 'pointer',
+                lineHeight: 1,
+              }}
+              aria-label="Sim, foi útil"
+            >
+              👍
+            </button>
+            <button
+              onClick={() => handleFeedback(-1)}
+              style={{
+                background: 'none',
+                border: '1.5px solid #E8E4DF',
+                borderRadius: '6px',
+                padding: '6px 14px',
+                fontSize: '1.125rem',
+                cursor: 'pointer',
+                lineHeight: 1,
+              }}
+              aria-label="Não foi útil"
+            >
+              👎
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              disabled
+              style={{
+                background: 'none',
+                border: `1.5px solid ${feedback === 1 ? '#C4622D' : '#E8E4DF'}`,
+                borderRadius: '6px',
+                padding: '6px 14px',
+                fontSize: '1.125rem',
+                cursor: 'default',
+                lineHeight: 1,
+                opacity: feedback === 1 ? 1 : 0.35,
+              }}
+            >
+              👍
+            </button>
+            <button
+              disabled
+              style={{
+                background: 'none',
+                border: `1.5px solid ${feedback === -1 ? '#666' : '#E8E4DF'}`,
+                borderRadius: '6px',
+                padding: '6px 14px',
+                fontSize: '1.125rem',
+                cursor: 'default',
+                lineHeight: 1,
+                opacity: feedback === -1 ? 1 : 0.35,
+              }}
+            >
+              👎
+            </button>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.8125rem',
+              color: '#888',
+            }}>
+              Obrigado!
+            </span>
+          </>
+        )}
       </div>
 
       {resultado.debug && (

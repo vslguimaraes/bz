@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { criarSessao, registrarEvento, completarSessao } from '@/lib/analytics'
 import StepHistorico    from './steps/StepHistorico'
 import StepTecnico      from './steps/StepTecnico'
 import StepEstilo       from './steps/StepEstilo'
@@ -42,6 +43,29 @@ export default function QuizShell() {
   const [resultado, setResultado] = useState<any>(null)
   const [erro, setErro]           = useState<string|null>(null)
 
+  const sessaoIdRef = useRef<string | null>(null)
+  const stepIndexRef = useRef(stepIndex)
+  stepIndexRef.current = stepIndex
+
+  useEffect(() => {
+    let cancelled = false
+    criarSessao()
+      .then(id => { if (!cancelled) sessaoIdRef.current = id })
+      .catch(() => { /* fire-and-forget */ })
+
+    const handleBeforeUnload = () => {
+      const id = sessaoIdRef.current
+      if (id) {
+        registrarEvento(id, 'quiz_abandoned', { ultimo_step: stepIndexRef.current })
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      cancelled = true
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
+
   const steps       = getSteps(perfil.historico)
   const currentStep = steps[stepIndex]
   const totalVisible = perfil.historico === 'recreativo' ? 6 : 7
@@ -51,6 +75,14 @@ export default function QuizShell() {
     setPerfil(novo)
     setDirection('forward')
     const novosSteps = getSteps(novo.historico)
+    const id = sessaoIdRef.current
+    if (id) {
+      registrarEvento(id, 'quiz_step', {
+        step: stepIndex + 1,
+        pergunta: novosSteps[stepIndex],
+        resposta: valor,
+      })
+    }
     if (stepIndex + 1 >= novosSteps.length) enviarPerfil(novo)
     else setStepIndex(i => i + 1)
   }, [perfil, stepIndex])
@@ -84,8 +116,13 @@ export default function QuizShell() {
         }),
       })
       if (!res.ok) throw new Error((await res.json()).error ?? 'Erro')
-      setResultado(await res.json())
+      const dados = await res.json()
+      setResultado(dados)
       setEstado('resultado')
+      const id = sessaoIdRef.current
+      if (id) {
+        completarSessao(id, p, dados)
+      }
     } catch (e: any) {
       setErro(e.message)
       setEstado('quiz')
@@ -204,7 +241,7 @@ export default function QuizShell() {
 
   if (estado === 'loading')  return <TelaLoading />
   if (estado === 'resultado' && resultado) return (
-    <TelaResultado resultado={resultado} onReiniciar={() => {
+    <TelaResultado resultado={resultado} sessaoId={sessaoIdRef.current ?? undefined} onReiniciar={() => {
       setPerfil({}); setStepIndex(0); setEstado('intro'); setResultado(null)
     }} />
   )
