@@ -43,12 +43,29 @@ function extrairGrip(grip: string): string {
 // UTM helper
 function addUtm(url: string, raqueteId: string): string {
   if (!url) return url
-  const u = new URL(url)
-  u.searchParams.set('utm_source', 'raquete-ideal')
-  u.searchParams.set('utm_medium', 'recommendation')
-  u.searchParams.set('utm_campaign', 'quiz')
-  u.searchParams.set('utm_content', raqueteId)
-  return u.toString()
+  try {
+    const u = new URL(url)
+    u.searchParams.set('utm_source', 'raquete-ideal')
+    u.searchParams.set('utm_medium', 'recommendation')
+    u.searchParams.set('utm_campaign', 'quiz')
+    u.searchParams.set('utm_content', raqueteId)
+    return u.toString()
+  } catch { return url }
+}
+
+// Loja ProSpin — primário para todas as marcas
+const PROSPIN_URL = 'https://www.prospin.com.br/raquetes/tenis?product_list_limit=72'
+
+// Fallback por marca: loja oficial BR ou site global da marca
+const MARCA_FALLBACK: Record<string, string> = {
+  Babolat:    'https://www.babolat.com/pt/tenis/raquetes/adultos.html',
+  Wilson:     'https://www.wilsonloja.com.br/collections/raquetes-tenis-esportes',
+  Head:       'https://www.head.com/en/shop-tennis/racquets',
+  Prince:     'https://princetennis.com/',
+  Tecnifibre: 'https://tecnifibre.com/pt-br/',
+  Dunlop:     'https://dunlopsport.com.br/categoria/tenis/',
+  Mizuno:     'https://www.mizuno.com.br/tenis',
+  // Yonex: sem loja BR → usa link_tw diretamente
 }
 
 const BADGE = [
@@ -72,9 +89,14 @@ function CardRaquete({
   const tensao   = extrairTensao(opcao.corda_sugerida)
   const grip     = extrairGrip(opcao.grip_sugerido)
   const raqueteId = opcao.raquete.modelo.toLowerCase().replace(/\s+/g, '-')
-  const href = addUtm(opcao.raquete.link_tw, raqueteId)
 
-  function handleAffiliateClick() {
+  // Links por prioridade
+  const hrefProspin    = addUtm(PROSPIN_URL, raqueteId)
+  const hrefMarcaBr    = MARCA_FALLBACK[opcao.raquete.marca]
+  const hrefTw         = opcao.raquete.link_tw ? addUtm(opcao.raquete.link_tw, raqueteId) : null
+  const hrefSecundario = hrefMarcaBr ?? hrefTw ?? null
+
+  function handleAffiliateClick(loja: string) {
     void (async () => {
       try {
         await supabase.from('eventos').insert({
@@ -84,7 +106,7 @@ function CardRaquete({
             marca: opcao.raquete.marca,
             modelo: opcao.raquete.modelo,
             posicao: index + 1,
-            loja: 'tennis_warehouse',
+            loja,
           },
         })
       } catch { /* fire-and-forget */ }
@@ -202,38 +224,57 @@ function CardRaquete({
           </div>
         </div>
 
-        {/* CTA */}
-        {opcao.raquete.link_tw ? (
+        {/* CTA primário — ProSpin */}
+        <a
+          href={hrefProspin}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => handleAffiliateClick('prospin')}
+          style={{
+            display: 'block',
+            padding: isPrimary ? '13px' : '11px',
+            background: isPrimary ? '#C4622D' : '#1A1A18',
+            color: '#FFFFFF',
+            borderRadius: '6px',
+            textAlign: 'center',
+            fontFamily: 'var(--font-body)',
+            fontWeight: 700,
+            fontSize: '0.8125rem',
+            letterSpacing: '0.07em',
+            textDecoration: 'none',
+            textTransform: 'uppercase',
+            marginBottom: hrefSecundario ? '8px' : 0,
+          }}
+        >
+          Buscar na ProSpin →
+        </a>
+
+        {/* Link secundário — marca BR ou TW */}
+        {hrefSecundario && (
           <a
-            href={href}
+            href={hrefSecundario}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={handleAffiliateClick}
+            onClick={() => handleAffiliateClick(hrefMarcaBr ? `marca_${opcao.raquete.marca.toLowerCase()}` : 'tennis_warehouse')}
             style={{
               display: 'block',
-              padding: isPrimary ? '13px' : '11px',
-              background: isPrimary ? '#C4622D' : '#1A1A18',
-              color: '#FFFFFF',
+              padding: '8px',
+              background: 'transparent',
+              color: '#999',
               borderRadius: '6px',
               textAlign: 'center',
               fontFamily: 'var(--font-body)',
-              fontWeight: 700,
-              fontSize: '0.8125rem',
-              letterSpacing: '0.07em',
+              fontWeight: 500,
+              fontSize: '0.6875rem',
+              letterSpacing: '0.05em',
               textDecoration: 'none',
-              textTransform: 'uppercase',
+              border: '1px solid #E8E4DF',
             }}
           >
-            Ver no Tennis Warehouse →
+            {hrefMarcaBr
+              ? `Ver em ${opcao.raquete.marca} →`
+              : 'Ver no Tennis Warehouse →'}
           </a>
-        ) : (
-          <div style={{
-            padding: '11px', background: '#F0EDEA', borderRadius: '6px',
-            textAlign: 'center', fontSize: '0.75rem', color: '#AAA',
-            fontFamily: 'var(--font-body)',
-          }}>
-            Busque na sua loja local
-          </div>
         )}
       </div>
     </div>
