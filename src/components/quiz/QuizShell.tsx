@@ -115,6 +115,10 @@ export default function QuizShell() {
           arquetipo_pro: p.arquetipo_pro ?? [],
         }),
       })
+      if (res.status === 429) {
+        const data = await res.json()
+        throw new Error(data.error ?? 'Muitas tentativas. Aguarde alguns minutos.')
+      }
       if (!res.ok) throw new Error((await res.json()).error ?? 'Erro')
       const dados = await res.json()
       setResultado(dados)
