@@ -256,13 +256,20 @@ export default function QuizShell() {
 
   // Background por step — sempre claro com overlay branco
   const STEP_BG: Record<string, string> = {
-    historico:  'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1400&q=80',
-    tecnico:    'https://images.unsplash.com/photo-1542144841-bf99-4a6f-a009-c95a3a9c6e3e?auto=format&fit=crop&w=1400&q=80',
-    estilo:     'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1400&q=80',
-    mobilidade: 'https://images.unsplash.com/photo-1528629297340-d1d466945dc5?auto=format&fit=crop&w=1400&q=80',
-    lesao:      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=1400&q=80',
-    raquete:    'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?auto=format&fit=crop&w=1400&q=80',
-    frequencia: 'https://images.unsplash.com/photo-1560012057-4372e14c5085?auto=format&fit=crop&w=1400&q=80',
+    // 1/7 — dois jogadores em partida, China Open (Fujifilm X-T2)
+    historico:  'https://images.unsplash.com/photo-1542446608-e9525230faed?auto=format&fit=crop&w=1400&q=80',
+    // 2/7 — homem jogando tênis, postura técnica
+    tecnico:    'https://images.unsplash.com/photo-1516742720271-6ae39cbc5bd1?auto=format&fit=crop&w=1400&q=80',
+    // 3/7 — jogador em ação, movimento de jogo
+    estilo:     'https://images.unsplash.com/photo-1599586120429-48281b6f0ece?auto=format&fit=crop&w=1400&q=80',
+    // 4/7 — quatro jogadores de duplas, visão ampla de quadra
+    mobilidade: 'https://images.unsplash.com/flagged/photo-1576972405668-2d020a01cbfa?auto=format&fit=crop&w=1400&q=80',
+    // 5/7 — pessoa segurando raquete na quadra
+    lesao:      'https://images.unsplash.com/photo-1646343253545-9171464ce425?auto=format&fit=crop&w=1400&q=80',
+    // 6/7 — quadra de saibro vazia, Roland Garros
+    raquete:    'https://images.unsplash.com/photo-1751275061659-2dfbab1c5395?auto=format&fit=crop&w=1400&q=80',
+    // 7/7 — estádio de saibro à noite com público
+    frequencia: 'https://images.unsplash.com/photo-1780087585348-681c2bee2634?auto=format&fit=crop&w=1400&q=80',
   }
   const bgUrl = STEP_BG[currentStep]
 
